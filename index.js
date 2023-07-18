@@ -181,7 +181,7 @@ app.get('/setting/get', verifyToken, async (req, res) => {
     client.query("SELECT * FROM settings")
           .then((result) => {
            
-            res.send(result.rows);
+            res.send(JSON.stringify(result.rows));
 
           })
           .catch((e) => {
