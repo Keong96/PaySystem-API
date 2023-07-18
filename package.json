@@ -5,6 +5,7 @@
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^16.3.1",
+    "dotnet": "^1.1.4",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.1",
     "pg": "^8.11.1",
@@ -13,11 +14,11 @@
   "name": "paysystem",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
+  "devDependencies": {},
   "description": ""
 }
