@@ -147,7 +147,20 @@ app.get('/action_log/get', verifyToken, async (req, res) => {
     client.query("SELECT * FROM action_log")
           .then((result) => {
            
-            res.send(result.rows);
+            const perPage = 15; // Number of items per page
+            const page = parseInt(req.query.page) || 1; // Current page number
+            const startIndex = (page - 1) * perPage;
+            const endIndex = page * perPage;
+
+            const data = result.rows.slice(startIndex, endIndex);
+
+            res.json({
+              currentPage: page,
+              perPage: perPage,
+              totalItems: data.length,
+              totalPages: Math.ceil(data.length / perPage),
+              data: data
+            });
 
           })
           .catch((e) => {
