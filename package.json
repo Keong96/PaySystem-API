@@ -7,5 +7,15 @@
     "jsonwebtoken": "^9.0.1",
     "pg": "^8.11.1",
     "qrcode": "^1.5.3"
-  }
+  },
+  "name": "paysystem-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
