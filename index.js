@@ -61,6 +61,17 @@ app.get('/', async (req, res) => {
   res.status(200).send("OK");
 })
 
+app.get('/user/get/:id', verifyToken, async (req, res) => {
+  client.query("SELECT * FROM users WHERE id = '"+req.params.id)
+        .then((result) => {
+          res.send(JSON.stringify(result.rows[0].username));
+        })
+        .catch((e) => {
+          console.error(e.stack);
+          res.status(500).send(e.stack);
+        })
+})
+
 app.post('/user/login', async (req, res) => {
 
   if( typeof(req.body.username) == 'undefined' || typeof(req.body.password) == 'undefined')
@@ -102,7 +113,8 @@ app.get('/request/get', verifyToken, async (req, res) => {
     //client.query("SELECT * FROM requests WHERE deleted_at IS NULL ORDER BY id")
     client.query("SELECT * FROM requests ORDER BY id")
           .then((result) => {
-            const perPage = parseInt(req.query.perPage) || 10; // Number of items per page
+            //const perPage = parseInt(req.query.perPage) || 15; // Number of items per page
+            const perPage = 15; // Number of items per page
             const page = parseInt(req.query.page) || 1; // Current page number
             const startIndex = (page - 1) * perPage;
             const endIndex = page * perPage;
@@ -128,3 +140,23 @@ app.get('/request/get', verifyToken, async (req, res) => {
   }
 })
 
+app.get('/setting/get', verifyToken, async (req, res) => {
+  
+  if(req.user.userId == 1)
+  {
+    client.query("SELECT * FROM settings")
+          .then((result) => {
+           
+            res.send(result.rows);
+
+          })
+          .catch((e) => {
+            console.error(e.stack);
+            res.status(500).send(e.stack);
+          })
+  }
+  else
+  {
+    res.status(401).send("UnAuthorized");
+  }
+})
