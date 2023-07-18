@@ -22,7 +22,7 @@ app.use(cors())
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: false, parameterLimit:50000 }));
 
-function GenerateJWT(_userId, _email, _username)
+function GenerateJWT(_userId, _username)
 {
   return jwt.sign(
       { userId: _userId, email: _email, username: _username},
