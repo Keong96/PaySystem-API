@@ -140,6 +140,27 @@ app.get('/request/get', verifyToken, async (req, res) => {
   }
 })
 
+app.get('/action_log/get', verifyToken, async (req, res) => {
+  
+  if(req.user.userId == 1)
+  {
+    client.query("SELECT * FROM action_log")
+          .then((result) => {
+           
+            res.send(result.rows);
+
+          })
+          .catch((e) => {
+            console.error(e.stack);
+            res.status(500).send(e.stack);
+          })
+  }
+  else
+  {
+    res.status(401).send("UnAuthorized");
+  }
+})
+
 app.get('/setting/get', verifyToken, async (req, res) => {
   
   if(req.user.userId == 1)
