@@ -63,16 +63,16 @@ app.get('/', async (req, res) => {
 
 app.post('/user/login', async (req, res) => {
 
-  if( typeof(req.body.email) == 'undefined' || typeof(req.body.password) == 'undefined')
+  if( typeof(req.body.username) == 'undefined' || typeof(req.body.password) == 'undefined')
   {
-    return res.status(500).send("Error: Please enter your email and password to login.");
+    return res.status(500).send("错误: 请键入您的用户名和密码以登录。");
   }
 
-  client.query("SELECT * FROM users WHERE email = '"+req.body.email+"' AND password = crypt('"+req.body.password+"', password)")
+  client.query("SELECT * FROM users WHERE username = '"+req.body.username+"' AND password = crypt('"+req.body.password+"', password)")
         .then((result) => {
           if(result.rows.length > 0)
           {
-            const token = GenerateJWT(result.rows[0].id, result.rows[0].email, result.rows[0].username);
+            const token = GenerateJWT(result.rows[0].id, result.rows[0].username);
 
             client.query("UPDATE users SET last_login = NOW() WHERE id = "+result.rows[0].id)
 
@@ -80,14 +80,13 @@ app.post('/user/login', async (req, res) => {
                 success: true,
                 data: {
                   userId: result.rows[0].id,
-                  email: result.rows[0].email,
                   token: token,
                 },
               });
           }
           else
           {
-            res.status(500).send("Error: Wrong Username or Password");
+            res.status(500).send("错误：用户名或密码错误。");
           }
         })
         .catch((e) => {
@@ -96,52 +95,5 @@ app.post('/user/login', async (req, res) => {
         })
 })
 
-app.post('/user/create', async (req, res) => {
 
-  if( typeof(req.body.email) == 'undefined' || typeof(req.body.password) == 'undefined' || typeof(req.body.username) == 'undefined')
-  {
-    return res.status(500).send("Error: Please fill in your username, email, and password to complete the registration process.");
-  }
-
-  client.query("SELECT * FROM users WHERE email = '"+req.body.email+"'")
-        .then((result) => {
-            if(result.rows.length > 0)
-            {
-              if(req.body.email == result.rows[0].email)
-                return res.status(500).send("Error: Email has been taken");
-            }
-            else
-            {
-              var code = crypto.randomBytes(6).toString('hex');
-              client.query("INSERT INTO users (username, email, password) VALUES ('"+req.body.username+"', '"+req.body.email+"', crypt('"+req.body.password+"', gen_salt('bf')))")
-                    .then((result) => {
-                      res.status(201).send("Register Success");
-
-                      var mailOptions = {
-                        from: 'youremail@gmail.com',
-                        to: req.body.email,
-                        subject: 'Sending Email using Node.js',
-                        text: 'Verification Code : '+code
-                      };
-                      
-                      transporter.sendMail(mailOptions, function(error, info){
-                        if (error) {
-                          console.log(error);
-                        } else {
-                          console.log('Email sent: ' + info.response);
-                        }
-                      });
-
-                    })
-                    .catch((e) => {
-                      console.error(e.stack);
-                      res.status(500).send(e.stack);
-                    })
-            }
-        })
-        .catch((e) => {
-          console.error(e.stack);
-          res.status(500).send(e.stack);
-        })
-})
 
