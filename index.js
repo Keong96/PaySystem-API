@@ -95,5 +95,36 @@ app.post('/user/login', async (req, res) => {
         })
 })
 
+app.get('/request/get', verifyToken, async (req, res) => {
+  
+  if(req.user.userId == 1)
+  {
+    //client.query("SELECT * FROM requests WHERE deleted_at IS NULL ORDER BY id")
+    client.query("SELECT * FROM requests ORDER BY id")
+          .then((result) => {
+            const perPage = parseInt(req.query.perPage) || 10; // Number of items per page
+            const page = parseInt(req.query.page) || 1; // Current page number
+            const startIndex = (page - 1) * perPage;
+            const endIndex = page * perPage;
 
+            const data = result.rows.slice(startIndex, endIndex);
+
+            res.json({
+              currentPage: page,
+              perPage: perPage,
+              totalItems: users.length,
+              totalPages: Math.ceil(users.length / perPage),
+              data: data
+            });
+          })
+          .catch((e) => {
+            console.error(e.stack);
+            res.status(500).send(e.stack);
+          })
+  }
+  else
+  {
+    res.status(401).send("UnAuthorized");
+  }
+})
 
