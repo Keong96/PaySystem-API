@@ -112,8 +112,8 @@ app.get('/request/get', verifyToken, async (req, res) => {
             res.json({
               currentPage: page,
               perPage: perPage,
-              totalItems: users.length,
-              totalPages: Math.ceil(users.length / perPage),
+              totalItems: data.length,
+              totalPages: Math.ceil(data.length / perPage),
               data: data
             });
           })
