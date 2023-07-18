@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: false, parameterLimit:5
 function GenerateJWT(_userId, _username)
 {
   return jwt.sign(
-      { userId: _userId, email: _email, username: _username},
+      { userId: _userId, username: _username},
       process.env.TOKEN_KEY,
       { expiresIn: "24h" }
     );
