@@ -122,10 +122,12 @@ app.get('/home/get', verifyToken, async (req, res) => {
             {
               wallet_address = result.rows[i].setting_value;
 
-              client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND receiver_address = '"+result.rows[i].setting_value+"'")
-                    .then((result2) => {
+              //client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND receiver_address = '"+result.rows[i].setting_value+"'")
+                      client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE receiver_address = '"+result.rows[i].setting_value+"'")
+                            .then((result2) => {
                       today_in = result2.rows[0].total_amount;
-                      client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND sender_address = '"+result.rows[i].setting_value+"'")
+                      //client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND sender_address = '"+result.rows[i].setting_value+"'")
+                      client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE sender_address = '"+result.rows[i].setting_value+"'")
                             .then((result3) => {
                               today_out = result3.rows[0].total_amount;
                             })
