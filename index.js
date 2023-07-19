@@ -106,6 +106,45 @@ app.post('/user/login', async (req, res) => {
         })
 })
 
+app.get('/home/get', verifyToken, async (req, res) => {
+  
+  var data = [];
+
+  if(req.user.userId == 1)
+  {
+    client.query("SELECT * FROM request ORDER BY datetime DESC LIMIT 5")
+          .then((result) => {
+            data['record'] = result.rows;
+            client.query("SELECT SUM(amount) AS total_amount FROM request WHERE datetime >= CURRENT_DATE AND request_type = 0")
+                  .then((result) => {
+                    data['deposit'] = result.rows;
+                    client.query("SELECT SUM(amount) AS total_amount FROM request WHERE datetime >= CURRENT_DATE AND request_type = 1")
+                          .then((result) => {
+                          
+                            data['withdraw'] = result.rows;
+                            res.send(JSON.stringify(data));
+                          })
+                          .catch((e) => {
+                            console.error(e.stack);
+                            res.status(500).send(e.stack);
+                          })
+                  })
+                  .catch((e) => {
+                    console.error(e.stack);
+                    res.status(500).send(e.stack);
+                  })
+          })
+          .catch((e) => {
+            console.error(e.stack);
+            res.status(500).send(e.stack);
+          })
+  }
+  else
+  {
+    res.status(401).send("UnAuthorized");
+  }
+})
+
 app.get('/request/get', verifyToken, async (req, res) => {
   
   if(req.user.userId == 1)
