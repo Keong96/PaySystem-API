@@ -115,8 +115,8 @@ app.get('/home/get', verifyToken, async (req, res) => {
     client.query("SELECT * FROM requests")
           .then((result) => {
 
-          var income = {};
-          var expense = {};
+          var income = [];
+          var expense = [];
           
           for(var i = 0; i < result.rows.length; i++)
           {
@@ -129,15 +129,13 @@ app.get('/home/get', verifyToken, async (req, res) => {
               expense.push(result.rows[i]);
             }
           }
-          
-          console.log("income = "+income);
-          console.log("expense = "+expense);
 
+          data = JSON.stringify(data)
           data['income'] = income.slice(0, 5);
           data['expense'] = expense.slice(0, 5);
 
           console.log("data = "+data);
-          res.send(JSON.stringify(data));
+          res.send(data);
 
           })
           .catch((e) => {
