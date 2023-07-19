@@ -133,8 +133,9 @@ app.get('/home/get', verifyToken, async (req, res) => {
 
           data['income'] = income.slice(0, 5);
           data['expense'] = expense.slice(0, 5);
-          data['record']['deposit'] = 100;
-          data['record']['withdraw'] = 200;
+          data['deposit'] = 100;
+          data['withdraw'] = 200;
+          
           res.send(JSON.stringify(data));
 
           })
