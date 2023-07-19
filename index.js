@@ -140,7 +140,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
               });
 
               console.log("result2.rows[0].total_amount = "+today_in);
-              data.push({ walletAddress: wallet_address, today_in: today_in, today_out: result3.rows[0].today_out });
+              data.push({ walletAddress: wallet_address, today_in: today_in, today_out: today_out });
             }
 
             res.send(JSON.stringify(data));
