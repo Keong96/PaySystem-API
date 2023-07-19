@@ -15,6 +15,7 @@ const config = {
 
 const { Client } = require('pg');
 const { constants } = require("buffer");
+const { stringify } = require("querystring");
 const client = new Client(config);
 client.connect()
 
@@ -115,27 +116,25 @@ app.get('/home/get', verifyToken, async (req, res) => {
     client.query("SELECT * FROM requests ORDER BY datetime DESC LIMIT 5")
           .then((result) => {
 
-            data['record'] = result.rows;
-            client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND request_type = 0")
-                  .then((result2) => {
-
-                    data['deposit'] = result2.rows;
-                    client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND request_type = 1")
-                          .then((result3) => {
-
-                            data['withdraw'] = result3.rows;
-                            res.send(JSON.stringify(data));
-
-                          })
-                          .catch((e) => {
-                            console.error(e.stack);
-                            res.status(500).send(e.stack);
-                          })
-                  })
-                  .catch((e) => {
-                    console.error(e.stack);
-                    res.status(500).send(e.stack);
-                  })
+           var income = [];
+           var expense = [];
+           
+          for(var i = 0; i < result.rows.length; i++)
+          {
+              if(result.rows[i].request_type == 0)
+              {
+                income.push(result.rows[i]);
+              }
+              else
+              {
+                expense.push(result.rows[i]);
+              }
+          }
+          
+          data['income'] = income;
+          data['expense'] = expense;
+          res.send(JSON.stringify(data));
+          
           })
           .catch((e) => {
             console.error(e.stack);
