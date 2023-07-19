@@ -126,7 +126,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
   {
     var data = {};
 
-    client.query("SELECT * FROM setting")
+    client.query("SELECT * FROM settings")
           .then((result) => {
             for(var i = 0; i < 5; i++)
             {
