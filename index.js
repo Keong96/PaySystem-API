@@ -107,44 +107,42 @@ app.post('/user/login', async (req, res) => {
         })
 })
 
+function GetWalletSum(wallet_type, wallet_address, type)
+{
+  var amount;
+
+  client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND "+wallet_type+"_address = '"+wallet_address+"' AND request_type = "+type)
+        .then((result) => {
+
+        amount = result.rows[0].total_amount;
+  });
+
+  return amount;
+}
+
 app.get('/home/get', verifyToken, async (req, res) => {
   
   if(req.user.userId == 1)
   {
     var data = {};
 
-    client.query("SELECT * FROM requests ORDER BY datetime")
+    client.query("SELECT * FROM setting")
           .then((result) => {
-
-          var income = [];
-          var expense = [];
-          
-          for(var i = 0; i < result.rows.length; i++)
-          {
-            if(result.rows[i].request_type == 0)
+            for(var i = 0; i < 5; i++)
             {
-              income.push(result.rows[i]);
+              data.push({
+                walletAddress : result.rows[i].setting_value,
+                today_in : GetWalletSum("receiver", result.rows[i].setting_value, 0),
+                today_out : GetWalletSum("sender", result.rows[i].setting_value, 1)
+              });
             }
-            else
-            {
-              expense.push(result.rows[i]);
-            }
-          }
 
-          data['income'] = income.slice(0, 5);
-          data['expense'] = expense.slice(0, 5);
-          data['deposit'] = 100;
-          data['withdraw'] = 200;
-          
-          console.log("data = " + data);
-
-          res.send(JSON.stringify(data));
-
+            res.send(JSON.stringify(data));
           })
           .catch((e) => {
             console.error(e.stack);
             res.status(500).send(e.stack);
-          })
+          });          
   }
   else
   {
