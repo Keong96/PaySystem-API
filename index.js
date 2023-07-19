@@ -130,8 +130,8 @@ app.get('/home/get', verifyToken, async (req, res) => {
               }
           }
           
-          data['income'] = income;
-          data['expense'] = expense;
+          data['income'] = income.slice(0, 5);
+          data['expense'] = expense.slice(0, 5);
           res.send(JSON.stringify(data));
           
           })
