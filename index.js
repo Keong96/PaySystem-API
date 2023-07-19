@@ -138,7 +138,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
               });
 
               console.log("result2.rows[0].total_amount = "+result2.rows[0].total_amount);
-              data.push({ walletAddress: result.rows[i].setting_value;, today_in: +result2.rows[0].total_amount, today_out: +result3.rows[0].total_amount });
+              data.push({ walletAddress: result.rows[i].setting_value, today_in: result2.rows[0].total_amount, today_out: result3.rows[0].total_amount });
             }
 
             res.send(JSON.stringify(data));
