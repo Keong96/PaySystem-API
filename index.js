@@ -135,6 +135,8 @@ app.get('/home/get', verifyToken, async (req, res) => {
               record['today_in'] = GetWalletSum("receiver", result.rows[i].setting_value, 0);
               record['today_out'] = GetWalletSum("sender", result.rows[i].setting_value, 1);
 
+              console.log(GetWalletSum("receiver", result.rows[i].setting_value, 0));
+              
               data.push(record);
             }
 
