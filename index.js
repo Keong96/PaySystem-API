@@ -124,7 +124,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
   
   if(req.user.userId == 1)
   {
-    var data = {};
+    var data = [];
 
     client.query("SELECT * FROM settings")
           .then((result) => {
