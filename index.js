@@ -143,7 +143,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
           // .catch((e) => {
           //   console.error(e.stack);
           //   res.status(500).send(e.stack);
-          // })
+          })
   }
   else
   {
