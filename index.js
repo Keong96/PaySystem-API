@@ -112,7 +112,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
   if(req.user.userId == 1)
   {
     var data = [];
-    client.query("SELECT * FROM requests ORDER BY datetime")
+    client.query("SELECT * FROM requests")
           .then((result) => {
           
           var income = [];
