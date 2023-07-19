@@ -130,11 +130,12 @@ app.get('/home/get', verifyToken, async (req, res) => {
           .then((result) => {
             for(var i = 0; i < 5; i++)
             {
-              data.push({
-                walletAddress : result.rows[i].setting_value,
-                today_in : GetWalletSum("receiver", result.rows[i].setting_value, 0),
-                today_out : GetWalletSum("sender", result.rows[i].setting_value, 1)
-              });
+              var record = {};
+              record['walletAddress'] = result.rows[i].setting_value;
+              record['today_in'] = GetWalletSum("receiver", result.rows[i].setting_value, 0);
+              record['today_out'] = GetWalletSum("sender", result.rows[i].setting_value, 1);
+
+              data.push(record);
             }
 
             res.send(JSON.stringify(data));
