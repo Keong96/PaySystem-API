@@ -112,7 +112,10 @@ app.get('/home/get', verifyToken, async (req, res) => {
   if(req.user.userId == 1)
   {
     var data = [];
-    client.query("SELECT * FROM requests")
+    data['income'] = [];
+    data['expense'] = [];
+    
+    client.query("SELECT * FROM requests ORDER BY datetime")
           .then((result) => {
 
           var income = [];
@@ -130,12 +133,11 @@ app.get('/home/get', verifyToken, async (req, res) => {
             }
           }
 
-          data = JSON.stringify(data)
           data['income'] = income.slice(0, 5);
           data['expense'] = expense.slice(0, 5);
 
           console.log("data = "+data);
-          res.send(data);
+          res.send(JSON.stringify(data));
 
           })
           .catch((e) => {
