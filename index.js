@@ -114,15 +114,18 @@ app.get('/home/get', verifyToken, async (req, res) => {
   {
     client.query("SELECT * FROM requests ORDER BY datetime DESC LIMIT 5")
           .then((result) => {
+
             data['record'] = result.rows;
             client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND request_type = 0")
-                  .then((result) => {
-                    data['deposit'] = result.rows;
+                  .then((result2) => {
+
+                    data['deposit'] = result2.rows;
                     client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND request_type = 1")
-                          .then((result) => {
-                          
-                            data['withdraw'] = result.rows;
+                          .then((result3) => {
+
+                            data['withdraw'] = result3.rows;
                             res.send(JSON.stringify(data));
+
                           })
                           .catch((e) => {
                             console.error(e.stack);
@@ -152,7 +155,6 @@ app.get('/request/get', verifyToken, async (req, res) => {
     //client.query("SELECT * FROM requests WHERE deleted_at IS NULL ORDER BY id")
     client.query("SELECT * FROM requests ORDER BY id")
           .then((result) => {
-            //const perPage = parseInt(req.query.perPage) || 15; // Number of items per page
             const perPage = 15; // Number of items per page
             const page = parseInt(req.query.page) || 1; // Current page number
             const startIndex = (page - 1) * perPage;
@@ -163,8 +165,8 @@ app.get('/request/get', verifyToken, async (req, res) => {
             res.json({
               currentPage: page,
               perPage: perPage,
-              totalItems: data.length,
-              totalPages: Math.ceil(data.length / perPage),
+              totalItems: result.rows.length,
+              totalPages: Math.ceil(result.rows.length / perPage),
               data: data
             });
           })
@@ -196,8 +198,8 @@ app.get('/action_log/get', verifyToken, async (req, res) => {
             res.json({
               currentPage: page,
               perPage: perPage,
-              totalItems: data.length,
-              totalPages: Math.ceil(data.length / perPage),
+              totalItems: result.rows.length,
+              totalPages: Math.ceil(result.rows.length / perPage),
               data: data
             });
 
