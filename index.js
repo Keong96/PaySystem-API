@@ -111,29 +111,29 @@ app.get('/home/get', verifyToken, async (req, res) => {
   
   if(req.user.userId == 1)
   {
+    var data = [];
     client.query("SELECT * FROM requests ORDER BY datetime")
           .then((result) => {
-           
-          var data = [];
+          
           var income = [];
           var expense = [];
-           
+          
           for(var i = 0; i < result.rows.length; i++)
           {
-              if(result.rows[i].request_type == 0)
-              {
-                income.push(result.rows[i]);
-              }
-              else
-              {
-                expense.push(result.rows[i]);
-              }
+            if(result.rows[i].request_type == 0)
+            {
+              income.push(result.rows[i]);
+            }
+            else
+            {
+              expense.push(result.rows[i]);
+            }
           }
           
           data['income'] = income.slice(0, 5);
           data['expense'] = expense.slice(0, 5);
           res.send(JSON.stringify(data));
-          
+
           })
           .catch((e) => {
             console.error(e.stack);
