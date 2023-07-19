@@ -120,12 +120,12 @@ app.get('/home/get', verifyToken, async (req, res) => {
               var record = {};
               record['walletAddress'] = result.rows[i].setting_value;
 
-              client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND receiver_address = '"+wallet_address)
+              client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND receiver_address = '"+result.rows[i].setting_value)
                     .then((result2) => {
                       record['today_in'] = result2.rows[0].total_amount;
               });
 
-              client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND sender_address = '"+wallet_address)
+              client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND sender_address = '"+result.rows[i].setting_value)
                     .then((result3) => {
                       record['today_out'] = result3.rows[0].total_amount;
               });
