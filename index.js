@@ -132,6 +132,9 @@ app.get('/home/get', verifyToken, async (req, res) => {
              
               data.push(record);
             }
+            
+            console.log(data);
+            console.log(record);
 
             res.send(JSON.stringify(data));
           })
