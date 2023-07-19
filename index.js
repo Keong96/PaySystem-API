@@ -111,7 +111,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
   
   if(req.user.userId == 1)
   {
-    var data = [];
+    var data = {};
 
     client.query("SELECT * FROM requests ORDER BY datetime")
           .then((result) => {
@@ -131,13 +131,12 @@ app.get('/home/get', verifyToken, async (req, res) => {
             }
           }
 
-          data = JSON.parse(JSON.stringify(data));
           data['income'] = income.slice(0, 5);
           data['expense'] = expense.slice(0, 5);
           data['deposit'] = 100;
           data['withdraw'] = 200;
           
-          console.log("data" + data);
+          console.log("data = " + data);
 
           res.send(JSON.stringify(data));
 
