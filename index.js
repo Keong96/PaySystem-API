@@ -109,15 +109,14 @@ app.post('/user/login', async (req, res) => {
 
 app.get('/home/get', verifyToken, async (req, res) => {
   
-  var data = [];
-
   if(req.user.userId == 1)
   {
-    client.query("SELECT * FROM requests ORDER BY datetime DESC LIMIT 5")
+    client.query("SELECT * FROM requests ORDER BY datetime")
           .then((result) => {
-
-           var income = [];
-           var expense = [];
+           
+          var data = [];
+          var income = [];
+          var expense = [];
            
           for(var i = 0; i < result.rows.length; i++)
           {
