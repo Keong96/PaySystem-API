@@ -114,7 +114,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
     var data = [];
     client.query("SELECT * FROM requests")
           .then((result) => {
-          
+          console.log("result.rows.length = "+result.rows.length);
           var income = [];
           var expense = [];
           
