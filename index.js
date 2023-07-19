@@ -136,6 +136,9 @@ app.get('/home/get', verifyToken, async (req, res) => {
           data['deposit'] = 100;
           data['withdraw'] = 200;
           
+          console.log("JSON.stringify(data)" + JSON.stringify(data));
+          console.log("JSON.stringify(result.rows)" + JSON.stringify(result.rows));
+
           res.send(JSON.stringify(data));
 
           })
