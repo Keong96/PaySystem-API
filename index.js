@@ -124,6 +124,8 @@ app.get('/home/get', verifyToken, async (req, res) => {
                     .then((result2) => {
                       record['today_in'] = result2.rows[0].total_amount;
 
+                      console.log("result2.rows[0].total_amount = "+result2.rows[0].total_amount);
+
                       client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND sender_address = '"+result.rows[i].setting_value+"'")
                             .then((result3) => {
                               record['today_out'] = result3.rows[0].total_amount;
@@ -140,9 +142,6 @@ app.get('/home/get', verifyToken, async (req, res) => {
 
               data.push(record);
             }
-
-            console.log(data);
-            console.log(record);
 
             res.send(JSON.stringify(data));
           })
