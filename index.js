@@ -141,7 +141,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
                 res.status(500).send(e.stack);
             });
             }
-            res.send(JSON.stringify(data));
+            res.send(data);
           })
           .catch((e) => {
             console.error(e.stack);
