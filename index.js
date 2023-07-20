@@ -120,7 +120,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
           .then((result) => {
             for(var i = 0; i < 5; i++)
             {
-              wallet_address = result.rows[i].setting_value;
+              data['wallet_address'] = result.rows[i].setting_value;
 
               //client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND receiver_address = '"+result.rows[i].setting_value+"'")
                   client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE receiver_address = '"+result.rows[i].setting_value+"'")
