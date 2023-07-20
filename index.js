@@ -111,39 +111,36 @@ app.get('/home/get', verifyToken, async (req, res) => {
   
   if(req.user.userId == 1)
   {
-    var data = [];
-    var wallet_address;
-    var today_in;
-    var today_out;
+    var data = {};
+    // var wallet_address;
+    // var today_in;
+    // var today_out;
 
     client.query("SELECT * FROM settings")
           .then((result) => {
             for(var i = 0; i < 5; i++)
             {
-              wallet_address = JSON.stringify(result.rows[i].setting_value);
+              wallet_address = result.rows[i].setting_value;
 
               //client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND receiver_address = '"+result.rows[i].setting_value+"'")
-                      client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE receiver_address = '"+result.rows[i].setting_value+"'")
-                            .then((result2) => {
-                      today_in = JSON.stringify(result2.rows[0].total_amount);
-                      //client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND sender_address = '"+result.rows[i].setting_value+"'")
-                      client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE sender_address = '"+result.rows[i].setting_value+"'")
-                            .then((result3) => {
-                              today_out = JSON.stringify(result3.rows[0].total_amount);
-                            })
-                            .catch((e) => {
-                              console.error(e.stack);
-                              res.status(500).send(e.stack);
-                            });
-                      })
-                    .catch((e) => {
-                      console.error(e.stack);
-                      res.status(500).send(e.stack);
-              });
-
-              data.push([{ walletAddress: wallet_address, today_in: today_in, today_out: today_out }]);
+                  client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE receiver_address = '"+result.rows[i].setting_value+"'")
+                        .then((result2) => {
+                  data['today_in'] = JSON.stringify(result2.rows[0].total_amount);
+                  //client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND sender_address = '"+result.rows[i].setting_value+"'")
+                  client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE sender_address = '"+result.rows[i].setting_value+"'")
+                        .then((result3) => {
+                  data['today_out'] = JSON.stringify(result3.rows[0].total_amount);
+                        })
+                        .catch((e) => {
+                          console.error(e.stack);
+                          res.status(500).send(e.stack);
+                        });
+                  })
+              .catch((e) => {
+                console.error(e.stack);
+                res.status(500).send(e.stack);
+            });
             }
-
             res.send(JSON.stringify(data));
           })
           .catch((e) => {
