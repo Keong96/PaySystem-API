@@ -118,7 +118,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
 
     client.query("SELECT * FROM settings")
           .then((result) => {
-            for(var i = 1; i < 6; i++)
+            for(var i = 0; i < 5; i++)
             {
               wallet_address = result.rows[i].setting_value;
 
