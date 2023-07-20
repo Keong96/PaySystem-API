@@ -158,13 +158,13 @@ app.get('/home/get', verifyToken, async (req, res) => {
   }
 })
 
-app.get('/request/get', verifyToken, async (req, res) => {
+app.get('/request/get/:type', verifyToken, async (req, res) => {
   
   if(req.user.userId == 1)
   {
-    //client.query("SELECT * FROM requests WHERE deleted_at IS NULL ORDER BY id")
-    client.query("SELECT * FROM requests ORDER BY id")
+    client.query("SELECT * FROM requests WHERE request_type = "+req.params.type+" ORDER BY id")
           .then((result) => {
+
             const perPage = 15; // Number of items per page
             const page = parseInt(req.query.page) || 1; // Current page number
             const startIndex = (page - 1) * perPage;
