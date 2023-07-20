@@ -118,7 +118,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
 
     client.query("SELECT * FROM settings")
           .then((result) => {
-            for(var i = 0; i < 5; i++)
+            for(var i = 1; i < 6; i++)
             {
               wallet_address = result.rows[i].setting_value;
 
@@ -141,8 +141,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
                       res.status(500).send(e.stack);
               });
 
-              console.log("result2.rows[0].total_amount = "+today_in);
-              data.push({ walletAddress: wallet_address, today_in: today_in, today_out: today_out });
+              data.push([{ walletAddress: wallet_address, today_in: today_in, today_out: today_out }]);
             }
 
             res.send(JSON.stringify(data));
