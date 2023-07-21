@@ -142,7 +142,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
                         });
             }
 
-            res.send(JSON.stringify(data));
+            res.send(JSON.stringify([...data]));
           })
           .catch((e) => {
             console.error(e.stack);
