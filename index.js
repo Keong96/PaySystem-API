@@ -111,23 +111,26 @@ app.get('/home/get', verifyToken, async (req, res) => {
   
   if(req.user.userId == 1)
   {
-    var data = {};
+    var data = [];
 
     client.query("SELECT * FROM settings")
           .then((result) => {
             for(var i = 0; i < 5; i++)
             {
-              data[i] = {};
-              data[i]['wallet_address'] = result.rows[i].setting_value;
+              record = {};
+
+              record['wallet_address'] = result.rows[i].setting_value;
 
               //client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND receiver_address = '"+result.rows[i].setting_value+"'")
                   client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE receiver_address = '"+result.rows[i].setting_value+"'")
                         .then((result2) => {
-                  data[i]['today_in'] = JSON.stringify(result2.rows[0].total_amount);
+                            record['today_in'] = JSON.stringify(result2.rows[0].total_amount);
                   //client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND sender_address = '"+result.rows[i].setting_value+"'")
                   client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE sender_address = '"+result.rows[i].setting_value+"'")
                         .then((result3) => {
-                  data[i]['today_out'] = JSON.stringify(result3.rows[0].total_amount);
+                            record['today_out'] = JSON.stringify(result3.rows[0].total_amount);
+
+                            data.push(record);
                         })
                         .catch((e) => {
                           console.error(e.stack);
@@ -139,6 +142,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
                 res.status(500).send(e.stack);
             });
             }
+            
             res.send(data);
           })
           .catch((e) => {
