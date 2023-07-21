@@ -114,7 +114,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
     const data = [];
 
     client.query("SELECT * FROM settings ORDER BY id ASC")
-          .then(async (result) => {
+          .then((result) => {
 
             var walletString = result.rows[0].setting_value;
             var wallet_address = walletString.split(',');
@@ -123,8 +123,8 @@ app.get('/home/get', verifyToken, async (req, res) => {
             {
               var record = {};
               record['wallet_address'] = wallet_address[i];
-              record['total_in'] = await getTotalIn(wallet_address[i]);
-              record['total_out'] = await getTotalout(wallet_address[i]);
+              record['total_in'] = getTotalIn(wallet_address[i]);
+              record['total_out'] = getTotalout(wallet_address[i]);
 
               data.push(record);
             }
@@ -144,8 +144,6 @@ app.get('/home/get', verifyToken, async (req, res) => {
 
 async function getTotalIn(address)
 {
-  
-  var record = {};
   client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE receiver_address = '"+address+"'")
         .then((result) => {
           return JSON.stringify(result.rows[0].total_amount);
