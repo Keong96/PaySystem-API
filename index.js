@@ -126,7 +126,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
               record['total_in'] = await getTotalIn(wallet_address[i]);
               record['total_out'] = await getTotalout(wallet_address[i]);
 
-              data.push(record);2
+              data.push(record);
             }
 
             res.send(JSON.stringify(data));
@@ -297,10 +297,6 @@ app.get('/wallet_address/get', async (req, res) => {
           var walletString = result.rows[0].setting_value;
           var wallet_address = walletString.split(',');
           var random = Math.floor(Math.random() * wallet_address.length);
-
-          console.log("wallet string = " + walletString);
-          console.log("wallet lenght = " + wallet_address.length);
-          console.log("rand = " + random);
 
           res.send(JSON.stringify(wallet_address[random]));
 
