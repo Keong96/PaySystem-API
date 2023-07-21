@@ -111,7 +111,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
   
   if(req.user.userId == 1)
   {
-    var data = {};
+    var data = [];
 
     client.query("SELECT * FROM settings")
           .then((result) => {
@@ -124,27 +124,26 @@ app.get('/home/get', verifyToken, async (req, res) => {
                 client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE receiver_address = '"+result.rows[i].setting_value+"'")
                       .then((result2) => {
                           record['today_in'] = JSON.stringify(result2.rows[0].total_amount);
-                //client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND sender_address = '"+result.rows[i].setting_value+"'")
-                    client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE sender_address = '"+result.rows[i].setting_value+"'")
-                          .then((result3) => {
-                              record['today_out'] = JSON.stringify(result3.rows[0].total_amount);
-                              
-                              data = data.concat(record);
-                          })
-                          .catch((e) => {
-                            console.error(e.stack);
-                            res.status(500).send(e.stack);
-                          });
-                      })
-                      .catch((e) => {
-                      console.error(e.stack);
-                      res.status(500).send(e.stack);
-                      });
+                      //client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND sender_address = '"+result.rows[i].setting_value+"'")
+                      client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE sender_address = '"+result.rows[i].setting_value+"'")
+                            .then((result3) => {
+                                record['today_out'] = JSON.stringify(result3.rows[0].total_amount);
+                                
+                                data.push(record);
+                            })
+                            .catch((e) => {
+                              console.error(e.stack);
+                              res.status(500).send(e.stack);
+                            });
+                        })
+                        .catch((e) => {
+                        console.error(e.stack);
+                        res.status(500).send(e.stack);
+                        });
             }
 
             console.log("data = "+JSON.stringify(data));
             res.send(JSON.stringify(data));
-
           })
           .catch((e) => {
             console.error(e.stack);
