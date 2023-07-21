@@ -115,6 +115,10 @@ app.get('/home/get', verifyToken, async (req, res) => {
 
     client.query("SELECT * FROM settings")
           .then((result) => {
+
+            var walletString = result.rows[0].setting_value;
+            var wallet_address = walletString.split(',');
+
             for(var i = 0; i < 5; i++)
             {
               var record = {};
@@ -140,11 +144,6 @@ app.get('/home/get', verifyToken, async (req, res) => {
                         console.error(e.stack);
                         res.status(500).send(e.stack);
                         });
-              
-              if(i == 4)
-              {
-                res.send(JSON.stringify(data));
-              }
             }
           })
           .catch((e) => {
@@ -280,4 +279,22 @@ app.get('/setting/get', verifyToken, async (req, res) => {
   {
     res.status(401).send("UnAuthorized");
   }
+})
+
+app.get('/wallet_address/get', async (req, res) => {
+  
+  client.query("SELECT * FROM settings")
+        .then((result) => {
+        
+          var walletString = result.rows[0].setting_value;
+          var wallet_address = walletString.split(',');
+
+          var random = Math.floor(Math.random() * (0 - wallet_address.length + 1)) + min;
+          res.send(JSON.stringify(wallet_address[random]));
+
+        })
+        .catch((e) => {
+          console.error(e.stack);
+          res.status(500).send(e.stack);
+        })
 })
