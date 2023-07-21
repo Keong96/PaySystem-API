@@ -128,10 +128,8 @@ app.get('/home/get', verifyToken, async (req, res) => {
                       client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE sender_address = '"+result.rows[i].setting_value+"'")
                             .then((result3) => {
                                 record['today_out'] = JSON.stringify(result3.rows[0].total_amount);
-                                
-                                console.log("data1 = "+JSON.stringify(data));
+
                                 data.push(record);
-                                console.log("data2 = "+JSON.stringify(data));
                             })
                             .catch((e) => {
                               console.error(e.stack);
