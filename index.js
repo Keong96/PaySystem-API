@@ -258,10 +258,22 @@ app.get('/setting/get', verifyToken, async (req, res) => {
   
   if(req.user.userId == 1)
   {
+    var data = [];
+
     client.query("SELECT * FROM settings")
           .then((result) => {
            
-            res.send(JSON.stringify(result.rows));
+            var wallet_address = result.rows[0].setting_value.split(',');
+
+            for(var i = 0; i < wallet_address.length; i++)
+            {
+              data['wallet_address_'+i] = wallet_address[i];
+            }
+
+            data['unionPay'] = result.rows[1].setting_value;
+            data['auto_approve_amount'] = result.rows[2].setting_value;
+
+            res.send(JSON.stringify(data));
 
           })
           .catch((e) => {
