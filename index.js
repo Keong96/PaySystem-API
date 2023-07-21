@@ -119,21 +119,25 @@ app.get('/home/get', verifyToken, async (req, res) => {
             var walletString = result.rows[0].setting_value;
             var wallet_address = walletString.split(',');
 
-            for(var i = 0; i < 5; i++)
+            for(var i = 0; i < wallet_address.length; i++)
             {
               var record = {};
-              record['wallet_address'] = result.rows[i].setting_value;
+              record['wallet_address'] = wallet_address[i];
 
                 //client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND receiver_address = '"+result.rows[i].setting_value+"'")
-                client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE receiver_address = '"+result.rows[i].setting_value+"'")
+                client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE receiver_address = '"+wallet_address[i]+"'")
                       .then((result2) => {
+
                           record['today_in'] = JSON.stringify(result2.rows[0].total_amount);
+
                       //client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND sender_address = '"+result.rows[i].setting_value+"'")
-                      client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE sender_address = '"+result.rows[i].setting_value+"'")
+                      client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE sender_address = '"+wallet_address[i]+"'")
                             .then((result3) => {
+
                                 record['today_out'] = JSON.stringify(result3.rows[0].total_amount);
 
                                 data.push(record);
+
                             })
                             .catch((e) => {
                               console.error(e.stack);
@@ -289,7 +293,7 @@ app.get('/wallet_address/get', async (req, res) => {
           var walletString = result.rows[0].setting_value;
           var wallet_address = walletString.split(',');
 
-          var random = Math.floor(Math.random() * (0 - wallet_address.length + 1)) + min;
+          var random = Math.floor(Math.random() * (0 - wallet_address.length + 1));
           res.send(JSON.stringify(wallet_address[random]));
 
         })
