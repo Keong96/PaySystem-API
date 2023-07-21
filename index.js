@@ -114,7 +114,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
     const data = [];
 
     client.query("SELECT * FROM settings")
-          .then((result) => {
+          .then(async (result) => {
 
             var walletString = result.rows[0].setting_value;
             var wallet_address = walletString.split(',');
@@ -123,8 +123,8 @@ app.get('/home/get', verifyToken, async (req, res) => {
             {
               var record = {};
               record['wallet_address'] = wallet_address[i];
-              //record['total_in'] = await getTotalIn(wallet_address[i]);
-              //record['total_out'] = await getTotalout(wallet_address[i]);
+              record['total_in'] = await getTotalIn(wallet_address[i]);
+              record['total_out'] = await getTotalout(wallet_address[i]);
 
               data.push(record);
             }
@@ -140,9 +140,30 @@ app.get('/home/get', verifyToken, async (req, res) => {
   }
 })
 
-function getTotalIn(address)
+async function getTotalIn(address)
 {
   
+  var record = {};
+  client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE receiver_address = '"+address+"'")
+        .then((result) => {
+          return JSON.stringify(result.rows[0].total_amount);
+        })
+        .catch((e) => {
+          console.error(e.stack);
+          res.status(500).send(e.stack);
+        }); 
+}
+
+async function getTotalout(address)
+{
+  client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE sender_address = '"+address+"'")
+        .then((result) => {
+          return JSON.stringify(result.rows[0].total_amount);
+        })
+        .catch((e) => {
+          console.error(e.stack);
+          res.status(500).send(e.stack);
+        }); 
 }
 
 app.get('/request/latest', verifyToken, async (req, res) => {
@@ -256,7 +277,7 @@ app.get('/setting/get', verifyToken, async (req, res) => {
 
 app.get('/wallet_address/get', async (req, res) => {
   
-  client.query("SELECT * FROM settings ORDER BY id")
+  client.query("SELECT * FROM settings ORDER BY id ASC")
         .then((result) => {
         
           var walletString = result.rows[0].setting_value;
