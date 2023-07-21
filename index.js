@@ -282,7 +282,7 @@ app.get('/wallet_address/get', async (req, res) => {
         
           var walletString = result.rows[0].setting_value;
           var wallet_address = walletString.split(',');
-          var random = Math.floor(Math.random() * (0 - wallet_address.length + 1));
+          var random = Math.floor(Math.random() * wallet_address.length);
 
           console.log("wallet string = " + walletString);
           console.log("wallet lenght = " + wallet_address.length);
