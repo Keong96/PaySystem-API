@@ -123,8 +123,11 @@ app.get('/home/get', verifyToken, async (req, res) => {
             {
               var record = {};
               record['wallet_address'] = wallet_address[i];
-              record['total_in'] = getTotalIn(wallet_address[i]);
-              record['total_out'] = getTotalout(wallet_address[i]);
+              // record['total_in'] = getTotalIn(wallet_address[i]);
+              // record['total_out'] = getTotalout(wallet_address[i]);
+
+              record['total_in'] = 0;
+              record['total_out'] = 0;
 
               data.push(record);
             }
