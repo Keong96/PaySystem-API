@@ -130,7 +130,6 @@ app.get('/home/get', verifyToken, async (req, res) => {
                                 record['today_out'] = JSON.stringify(result3.rows[0].total_amount);
 
                                 data.push(record);
-                                console.log("after push = "+JSON.stringify(data));
                             })
                             .catch((e) => {
                               console.error(e.stack);
@@ -141,10 +140,12 @@ app.get('/home/get', verifyToken, async (req, res) => {
                         console.error(e.stack);
                         res.status(500).send(e.stack);
                         });
+              
+              if(i == 4)
+              {
+                res.send(JSON.stringify(data));
+              }
             }
-
-            console.log("before send = "+JSON.stringify(data));
-            res.send(JSON.stringify(data));
           })
           .catch((e) => {
             console.error(e.stack);
