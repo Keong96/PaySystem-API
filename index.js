@@ -163,7 +163,7 @@ async function getTotalout(address)
         .catch((e) => {
           console.error(e.stack);
           res.status(500).send(e.stack);
-        }); 
+        });
 }
 
 app.get('/request/latest', verifyToken, async (req, res) => {
@@ -258,7 +258,7 @@ app.get('/setting/get', verifyToken, async (req, res) => {
   
   if(req.user.userId == 1)
   {
-    var data = [];
+    var data = {};
 
     client.query("SELECT * FROM settings")
           .then((result) => {
