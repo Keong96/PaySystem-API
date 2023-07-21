@@ -126,7 +126,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
               record['total_in'] = await getTotalIn(wallet_address[i]);
               record['total_out'] = await getTotalout(wallet_address[i]);
 
-              data.push(record);
+              data.push(record);2
             }
 
             res.send(JSON.stringify(data));
@@ -272,7 +272,7 @@ app.get('/setting/get', verifyToken, async (req, res) => {
               data['wallet_address_'+i] = wallet_address[i];
             }
 
-            data['unionPay'] = result.rows[1].setting_value;
+            data['union_pay'] = result.rows[1].setting_value;
             data['auto_approve_amount'] = result.rows[2].setting_value;
 
             res.send(JSON.stringify(data));
