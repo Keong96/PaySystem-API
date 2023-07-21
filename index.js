@@ -128,6 +128,8 @@ app.get('/home/get', verifyToken, async (req, res) => {
 
               data.push(record);
             }
+
+            res.send(JSON.stringify(data));
           })
           .catch((e) => {
             console.error(e.stack);
