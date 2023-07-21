@@ -129,7 +129,9 @@ app.get('/home/get', verifyToken, async (req, res) => {
                             .then((result3) => {
                                 record['today_out'] = JSON.stringify(result3.rows[0].total_amount);
                                 
+                                console.log("data1 = "+JSON.stringify(data));
                                 data.push(record);
+                                console.log("data2 = "+JSON.stringify(data));
                             })
                             .catch((e) => {
                               console.error(e.stack);
@@ -142,7 +144,6 @@ app.get('/home/get', verifyToken, async (req, res) => {
                         });
             }
 
-            console.log("data = "+JSON.stringify(data));
             res.send(JSON.stringify(data));
           })
           .catch((e) => {
