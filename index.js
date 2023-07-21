@@ -130,6 +130,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
                                 record['today_out'] = JSON.stringify(result3.rows[0].total_amount);
 
                                 data.push(record);
+                                console.log("after push = "+JSON.stringify(data));
                             })
                             .catch((e) => {
                               console.error(e.stack);
