@@ -113,7 +113,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
   {
     const data = [];
 
-    client.query("SELECT * FROM settings")
+    client.query("SELECT * FROM settings ORDER BY id ASC")
           .then(async (result) => {
 
             var walletString = result.rows[0].setting_value;
