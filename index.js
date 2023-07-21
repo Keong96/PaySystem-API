@@ -123,31 +123,10 @@ app.get('/home/get', verifyToken, async (req, res) => {
             {
               var record = {};
               record['wallet_address'] = wallet_address[i];
+              //record['total_in'] = await getTotalIn(wallet_address[i]);
+              //record['total_out'] = await getTotalout(wallet_address[i]);
 
-                //client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND receiver_address = '"+result.rows[i].setting_value+"'")
-                client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE receiver_address = '"+wallet_address[i]+"'")
-                      .then((result2) => {
-
-                          record['today_in'] = JSON.stringify(result2.rows[0].total_amount);
-
-                      //client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE datetime >= CURRENT_DATE AND datetime < CURRENT_DATE + INTERVAL '1 day' - INTERVAL '1 minute' AND sender_address = '"+result.rows[i].setting_value+"'")
-                      client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE sender_address = '"+wallet_address[i]+"'")
-                            .then((result3) => {
-
-                                record['today_out'] = JSON.stringify(result3.rows[0].total_amount);
-
-                                data.push(record);
-
-                            })
-                            .catch((e) => {
-                              console.error(e.stack);
-                              res.status(500).send(e.stack);
-                            });
-                        })
-                        .catch((e) => {
-                        console.error(e.stack);
-                        res.status(500).send(e.stack);
-                        });
+              data.push(record);
             }
           })
           .catch((e) => {
@@ -161,6 +140,11 @@ app.get('/home/get', verifyToken, async (req, res) => {
   }
 })
 
+function getTotalIn(address)
+{
+  
+}
+
 app.get('/request/latest', verifyToken, async (req, res) => {
   
   if(req.user.userId == 1)
@@ -169,21 +153,6 @@ app.get('/request/latest', verifyToken, async (req, res) => {
           .then((result) => {
 
             res.send(JSON.stringify(result.rows));
-
-            // const perPage = 15; // Number of items per page
-            // const page = parseInt(req.query.page) || 1; // Current page number
-            // const startIndex = (page - 1) * perPage;
-            // const endIndex = page * perPage;
-
-            // const data = result.rows.slice(startIndex, endIndex);
-
-            // res.json({
-            //   currentPage: page,
-            //   perPage: perPage,
-            //   totalItems: result.rows.length,
-            //   totalPages: Math.ceil(result.rows.length / perPage),
-            //   data: data
-            // });
 
           })
           .catch((e) => {
@@ -287,7 +256,7 @@ app.get('/setting/get', verifyToken, async (req, res) => {
 
 app.get('/wallet_address/get', async (req, res) => {
   
-  client.query("SELECT * FROM settings")
+  client.query("SELECT * FROM settings ORDER BY id")
         .then((result) => {
         
           var walletString = result.rows[0].setting_value;
