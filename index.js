@@ -123,12 +123,15 @@ app.get('/home/get', verifyToken, async (req, res) => {
             {
               var record = {};
               record['wallet_address'] = wallet_address[i];
-              record['total_in'] = await getTotalIn(wallet_address[i]);
-              record['total_out'] = await getTotalout(wallet_address[i]);
+             
+              var [totalIn, totalOut] = await Promise.all([
+                getTotalIn(wallet_address[i]),
+                getTotalOut(wallet_address[i])
+              ]);
 
-              // record['total_in'] = 0;
-              // record['total_out'] = 0;
-
+              record['total_in'] = totalIn;
+              record['total_out'] = totalOut;
+              
               data.push(record);
             }
 
@@ -153,7 +156,7 @@ async function getTotalIn(address)
         })
 }
 
-async function getTotalout(address)
+async function getTotalOut(address)
 {
   client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE sender_address = '"+address+"'")
         .then((result) => {
