@@ -150,18 +150,14 @@ app.get('/home/get', verifyToken, async (req, res) => {
 
 async function getTotalIn(address)
 {
-  client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE receiver_address = '"+address+"'")
-        .then((result) => {
-          return JSON.stringify(result.rows[0].total_amount);
-        })
+  const result = await client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE receiver_address = '"+address+"'")
+  return result.rows[0].total_amount;
 }
 
 async function getTotalOut(address)
 {
-  client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE sender_address = '"+address+"'")
-        .then((result) => {
-          return JSON.stringify(result.rows[0].total_amount);
-        })
+  const result = await client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE sender_address = '"+address+"'")
+  return result.rows[0].total_amount;
 }
 
 app.get('/request/latest', verifyToken, async (req, res) => {
