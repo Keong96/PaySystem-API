@@ -114,7 +114,7 @@ app.get('/home/get', verifyToken, async (req, res) => {
     const data = [];
 
     client.query("SELECT * FROM settings ORDER BY id ASC")
-          .then((result) => {
+          .then(async (result) => {
 
             var walletString = result.rows[0].setting_value;
             var wallet_address = walletString.split(',');
@@ -123,11 +123,11 @@ app.get('/home/get', verifyToken, async (req, res) => {
             {
               var record = {};
               record['wallet_address'] = wallet_address[i];
-              // record['total_in'] = getTotalIn(wallet_address[i]);
-              // record['total_out'] = getTotalout(wallet_address[i]);
+              record['total_in'] = await getTotalIn(wallet_address[i]);
+              record['total_out'] = await getTotalout(wallet_address[i]);
 
-              record['total_in'] = 0;
-              record['total_out'] = 0;
+              // record['total_in'] = 0;
+              // record['total_out'] = 0;
 
               data.push(record);
             }
@@ -151,10 +151,6 @@ async function getTotalIn(address)
         .then((result) => {
           return JSON.stringify(result.rows[0].total_amount);
         })
-        .catch((e) => {
-          console.error(e.stack);
-          res.status(500).send(e.stack);
-        }); 
 }
 
 async function getTotalout(address)
@@ -163,10 +159,6 @@ async function getTotalout(address)
         .then((result) => {
           return JSON.stringify(result.rows[0].total_amount);
         })
-        .catch((e) => {
-          console.error(e.stack);
-          res.status(500).send(e.stack);
-        });
 }
 
 app.get('/request/latest', verifyToken, async (req, res) => {
