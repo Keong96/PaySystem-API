@@ -255,7 +255,7 @@ app.get('/setting/get', verifyToken, async (req, res) => {
   {
     var data = {};
 
-    client.query("SELECT * FROM settings")
+    client.query("SELECT * FROM settings ORDER BY id")
           .then((result) => {
            
             var wallet_address = result.rows[0].setting_value.split(',');
