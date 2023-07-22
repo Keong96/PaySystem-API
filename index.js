@@ -119,21 +119,15 @@ app.get('/home/get', verifyToken, async (req, res) => {
             var walletString = result.rows[0].setting_value;
             var wallet_address = walletString.split(',');
 
-            for(var i = 0; i < wallet_address.length; i++)
-            {
-              var record = {};
-              record['wallet_address'] = wallet_address[i];
-             
-              var [totalIn, totalOut] = await Promise.all([
-                getTotalIn(wallet_address[i]),
-                getTotalOut(wallet_address[i])
-              ]);
-
-              record['total_in'] = totalIn;
-              record['total_out'] = totalOut;
-              
-              data.push(record);
-            }
+            const promises = wallet_address.map(async (address) => {
+              const record = {};
+              record['wallet_address'] = address;
+              record['total_in'] = await getTotalIn(address);
+              record['total_out'] = await getTotalOut(address);
+              return record;
+            });
+        
+            const data = await Promise.all(promises);
 
             res.send(JSON.stringify(data));
           })
