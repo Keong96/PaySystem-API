@@ -4,8 +4,8 @@ const bodyParser = require("body-parser");
 const cors = require('cors')
 const app = express();
 const PORT = process.env.PORT || 8081;
-const qrcode = require('qrcode');
-const crypto = require("crypto");
+//const qrcode = require('qrcode');
+//const crypto = require("crypto");
 require('dotenv').config();
 const TronWeb = require('tronweb');
 
