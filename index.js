@@ -304,7 +304,7 @@ app.get('/wallet_address/get', async (req, res) => {
         })
 })
 
-app.get('contract/balance', async (req, res) => {
+app.get('/contract/balance', async (req, res) => {
   try {
     const balance = await contract.getBalance().call();
     res.json({ balance });
@@ -314,7 +314,7 @@ app.get('contract/balance', async (req, res) => {
   }
 });
 
-app.post('contract/deposit', async (req, res) => {
+app.post('/contract/deposit', async (req, res) => {
   try {
 
     const amount = req.body.amount;
@@ -338,7 +338,7 @@ app.post('contract/deposit', async (req, res) => {
   }
 });
 
-app.post('contract/withdraw', async (req, res) => {
+app.post('/contract/withdraw', async (req, res) => {
   try {
     const options = { from: process.env.CONTRACT_OWNER }; // Replace with your contract owner address
 
