@@ -4,8 +4,6 @@ const bodyParser = require("body-parser");
 const cors = require('cors')
 const app = express();
 const PORT = process.env.PORT || 8081;
-//const qrcode = require('qrcode');
-//const crypto = require("crypto");
 require('dotenv').config();
 const TronWeb = require('tronweb');
 
@@ -25,8 +23,8 @@ let abi = [CONTRACT_ABI];
 const contract = tronWeb.contract(abi).at(contractAddress);
 
 const { Client } = require('pg');
-const { constants } = require("buffer");
-const { stringify } = require("querystring");
+// const { constants } = require("buffer");
+// const { stringify } = require("querystring");
 const client = new Client(config);
 client.connect()
 
