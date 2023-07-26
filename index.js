@@ -12,6 +12,8 @@ const config = {
     "postgres://paysystemdb_user:NImIQdhh8I8sWXJb79Z24uQTI5oJQqUD@dpg-cir0bbdiuie930j5d8lg-a.singapore-postgres.render.com/paysystemdb?ssl=true",
 };
 
+// --------------------------------------------------------------------------------------------------------
+
 const contractAddress = process.env.CONTRACT_ADDRESS;
 const privateKey = process.env.TRONGRID_PRIVATE_KEY;
 
@@ -25,6 +27,8 @@ const contract = tronWeb.contract(abi).at(contractAddress);
 const { Client } = require('pg');
 const client = new Client(config);
 client.connect()
+
+// --------------------------------------------------------------------------------------------------------
 
 app.use(cors())
 app.use(bodyParser.json({limit: '50mb'}));
