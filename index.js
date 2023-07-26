@@ -3,32 +3,19 @@ const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const cors = require('cors')
 const app = express();
-const PORT = process.env.PORT || 8081;
+const PORT = process.env.PORT || 8082;
 require('dotenv').config();
-//const TronWeb = require('tronweb');
+const TronWeb = require('tronweb');
 
 const config = {
   connectionString:
     "postgres://paysystemdb_user:NImIQdhh8I8sWXJb79Z24uQTI5oJQqUD@dpg-cir0bbdiuie930j5d8lg-a.singapore-postgres.render.com/paysystemdb?ssl=true",
 };
 
-// --------------------------------------------------------------------------------------------------------
-
-const contractAddress = process.env.CONTRACT_ADDRESS;
-const privateKey = process.env.TRONGRID_PRIVATE_KEY;
-
-// const tronWeb = new TronWeb({
-//   fullHost: 'https://api.shasta.trongrid.io',
-//   privateKey,
-// });
-// let abi = [CONTRACT_ABI];
-// const contract = tronWeb.contract(abi).at(contractAddress);
-
 const { Client } = require('pg');
 const client = new Client(config);
 client.connect()
 
-// --------------------------------------------------------------------------------------------------------
 
 app.use(cors())
 app.use(bodyParser.json({limit: '50mb'}));
@@ -306,50 +293,75 @@ app.get('/wallet_address/get', async (req, res) => {
 
 // -------------------------------------------------------------------------------------------------------------------------
 
-// app.get('/contract/balance', async (req, res) => {
-//   try {
-//     const balance = await contract.getBalance().call();
-//     res.json({ balance });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+const contractAddress = process.env.CONTRACT_ADDRESS;
+const apiKey = process.env.TRONGRID_PRIVATE_KEY;
 
-// app.post('/contract/deposit', async (req, res) => {
-//   try {
+var privateKey = process.env.CONTRACT_OWNER_PRIVATE_KEY;
 
-//     const amount = req.body.amount;
-//     const options = { from: req.body.wallet_address };
+const tronWeb = new TronWeb({
+  fullHost: 'https://api.shasta.trongrid.io',
+  solidityNode : 'https://api.shasta.trongrid.io',
+  eventServer : 'https://api.shasta.trongrid.io',
+  //headers: { "TRON-PRO-API-KEY": apiKey },
+  privateKey: privateKey,
+});
+let abi = [process.env.CONTRACT_ABI];
 
-//     const approveTx = await tronWeb.trx.sendTransaction(
-//       contractAddress,
-//       amount,
-//       options,
-//       contract.approve(contractAddress, amount).encodeABI()
-//     );
+app.get('/contract/balance', async (req, res) => {
+  try {
 
-//     await tronWeb.trx.getTransaction(approveTx.txid);
+    let contract = await tronWeb.contract(abi).at(contractAddress);
 
-//     const depositTx = await contract.depositUSDT(amount).send(options);
+    let result = await contract.getBalance().call();
+    
+    let data = tronWeb.toDecimal(result._hex) / 1000000;
 
-//     res.json({ transaction: depositTx.txid });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+    res.json(data);
 
-// app.post('/contract/withdraw', async (req, res) => {
-//   try {
-//     const options = { from: process.env.CONTRACT_OWNER }; // Replace with your contract owner address
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error.stack);
+  }
+});
 
-//     // Call the contract's withdraw function
-//     const withdrawTx = await contract.withdraw().send(options);
+app.post('/contract/deposit', async (req, res) => {
+  try {
 
-//     res.json({ transaction: withdrawTx.txid });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+    let contract = await tronWeb.contract(abi).at(contractAddress);
+    let result = await contract.deposit(req.body.amount * 1000000).send();
+    
+    res.json(result);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error.stack);
+  }
+});
+
+app.post('/contract/withdraw', async (req, res) => {
+  try {
+
+    let contract = await tronWeb.contract(abi).at(contractAddress);
+    let result = await contract.withdraw(req.body.amount * 1000000).send();
+    
+    res.json(result);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error.stack);
+  }
+});
+
+app.post('/contract/transferFunds', async (req, res) => {
+  try {
+
+    let contract = await tronWeb.contract(abi).at(contractAddress);
+    let result = await contract.transferFunds(req.body.recipient_address, req.body.amount * 1000000).send();
+    
+    res.json(result);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error.stack);
+  }
+});
