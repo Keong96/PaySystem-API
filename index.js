@@ -5,7 +5,7 @@ const cors = require('cors')
 const app = express();
 const PORT = process.env.PORT || 8081;
 require('dotenv').config();
-const TronWeb = require('tronweb');
+//const TronWeb = require('tronweb');
 
 const config = {
   connectionString:
@@ -17,12 +17,12 @@ const config = {
 const contractAddress = process.env.CONTRACT_ADDRESS;
 const privateKey = process.env.TRONGRID_PRIVATE_KEY;
 
-const tronWeb = new TronWeb({
-  fullHost: 'https://api.shasta.trongrid.io',
-  privateKey,
-});
-let abi = [CONTRACT_ABI];
-const contract = tronWeb.contract(abi).at(contractAddress);
+// const tronWeb = new TronWeb({
+//   fullHost: 'https://api.shasta.trongrid.io',
+//   privateKey,
+// });
+// let abi = [CONTRACT_ABI];
+// const contract = tronWeb.contract(abi).at(contractAddress);
 
 const { Client } = require('pg');
 const client = new Client(config);
@@ -306,50 +306,50 @@ app.get('/wallet_address/get', async (req, res) => {
 
 // -------------------------------------------------------------------------------------------------------------------------
 
-app.get('/contract/balance', async (req, res) => {
-  try {
-    const balance = await contract.getBalance().call();
-    res.json({ balance });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+// app.get('/contract/balance', async (req, res) => {
+//   try {
+//     const balance = await contract.getBalance().call();
+//     res.json({ balance });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
-app.post('/contract/deposit', async (req, res) => {
-  try {
+// app.post('/contract/deposit', async (req, res) => {
+//   try {
 
-    const amount = req.body.amount;
-    const options = { from: req.body.wallet_address };
+//     const amount = req.body.amount;
+//     const options = { from: req.body.wallet_address };
 
-    const approveTx = await tronWeb.trx.sendTransaction(
-      contractAddress,
-      amount,
-      options,
-      contract.approve(contractAddress, amount).encodeABI()
-    );
+//     const approveTx = await tronWeb.trx.sendTransaction(
+//       contractAddress,
+//       amount,
+//       options,
+//       contract.approve(contractAddress, amount).encodeABI()
+//     );
 
-    await tronWeb.trx.getTransaction(approveTx.txid);
+//     await tronWeb.trx.getTransaction(approveTx.txid);
 
-    const depositTx = await contract.depositUSDT(amount).send(options);
+//     const depositTx = await contract.depositUSDT(amount).send(options);
 
-    res.json({ transaction: depositTx.txid });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+//     res.json({ transaction: depositTx.txid });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
-app.post('/contract/withdraw', async (req, res) => {
-  try {
-    const options = { from: process.env.CONTRACT_OWNER }; // Replace with your contract owner address
+// app.post('/contract/withdraw', async (req, res) => {
+//   try {
+//     const options = { from: process.env.CONTRACT_OWNER }; // Replace with your contract owner address
 
-    // Call the contract's withdraw function
-    const withdrawTx = await contract.withdraw().send(options);
+//     // Call the contract's withdraw function
+//     const withdrawTx = await contract.withdraw().send(options);
 
-    res.json({ transaction: withdrawTx.txid });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+//     res.json({ transaction: withdrawTx.txid });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
