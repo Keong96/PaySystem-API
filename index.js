@@ -2,6 +2,7 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const cors = require('cors')
+const crypto = require("crypto")
 const app = express();
 const PORT = process.env.PORT || 8081;
 require('dotenv').config();
@@ -23,8 +24,6 @@ let abi = [CONTRACT_ABI];
 const contract = tronWeb.contract(abi).at(contractAddress);
 
 const { Client } = require('pg');
-// const { constants } = require("buffer");
-// const { stringify } = require("querystring");
 const client = new Client(config);
 client.connect()
 
