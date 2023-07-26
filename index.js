@@ -2,7 +2,6 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const cors = require('cors')
-const crypto = require("crypto")
 const app = express();
 const PORT = process.env.PORT || 8081;
 require('dotenv').config();
@@ -300,6 +299,8 @@ app.get('/wallet_address/get', async (req, res) => {
           res.status(500).send(e.stack);
         })
 })
+
+// -------------------------------------------------------------------------------------------------------------------------
 
 app.get('/contract/balance', async (req, res) => {
   try {
