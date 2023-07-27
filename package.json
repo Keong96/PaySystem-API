@@ -20,5 +20,8 @@
     "pg": "^8.11.1",
     "tronweb": "^5.3.0"
   },
+  "engines": {
+    "node": ">=16"
+  },
   "description": ""
 }
