@@ -249,17 +249,17 @@ app.get('/setting/get', verifyToken, async (req, res) => {
     client.query("SELECT * FROM settings ORDER BY id")
           .then((result) => {
            
-            var wallet_address = result.rows[0].setting_value.split(',');
+            // var wallet_address = result.rows[0].setting_value.split(',');
 
-            for(var i = 0; i < wallet_address.length; i++)
-            {
-              data['wallet_address'].push(wallet_address[i]);
-            }
+            // for(var i = 0; i < wallet_address.length; i++)
+            // {
+            //   data['wallet_address'].push(wallet_address[i]);
+            // }
 
-            data['union_pay'] = result.rows[1].setting_value;
-            data['auto_approve_amount'] = result.rows[2].setting_value;
+            // data['union_pay'] = result.rows[1].setting_value;
+            // data['auto_approve_amount'] = result.rows[2].setting_value;
 
-            res.send(JSON.stringify(data));
+            // res.send(JSON.stringify(data));
 
           })
           .catch((e) => {
