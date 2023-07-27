@@ -307,13 +307,24 @@ const tronWeb = new TronWeb({
 });
 let abi = [process.env.CONTRACT_ABI];
 
+function eventListen()
+{
+  contract = tronWeb.contract(abi).at(contractAddress)
+                    .Deposit()
+                    .watch((err, event) => {
+                      if (err) {
+                        console.error('Error watching event:', err);
+                      } else {
+                        console.log('Event received:', event);
+                      }
+                    });
+}
+
 app.get('/contract/balance', async (req, res) => {
   try {
 
     let contract = await tronWeb.contract(abi).at(contractAddress);
-
     let result = await contract.getBalance().call();
-    
     let data = tronWeb.toDecimal(result._hex) / 1000000;
 
     res.json(data);
