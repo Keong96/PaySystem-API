@@ -111,28 +111,28 @@ app.get('/home/get', verifyToken, async (req, res) => {
   {
     const data = [];
 
-    // client.query("SELECT * FROM settings ORDER BY id ASC")
-    //       .then(async (result) => {
+    client.query("SELECT * FROM settings ORDER BY id ASC")
+          .then(async (result) => {
 
-    //         var walletString = result.rows[0].setting_value;
-    //         var wallet_address = walletString.split(',');
+            var walletString = result.rows[0].setting_value;
+            var wallet_address = walletString.split(',');
 
-    //         const promises = wallet_address.map(async (address) => {
-    //           const record = {};
-    //           record['wallet_address'] = address;
-    //           record['total_in'] = await getTotalIn(address);
-    //           record['total_out'] = await getTotalOut(address);
-    //           return record;
-    //         });
+            const promises = wallet_address.map(async (address) => {
+              const record = {};
+              record['wallet_address'] = address;
+              record['total_in'] = await getTotalIn(address);
+              record['total_out'] = await getTotalOut(address);
+              return record;
+            });
         
-    //         const data = await Promise.all(promises);
+            const data = await Promise.all(promises);
 
-    //         res.send(JSON.stringify(data));
-    //       })
-    //       .catch((e) => {
-    //         console.error(e.stack);
-    //         res.status(500).send(e.stack);
-    //       });          
+            res.send(JSON.stringify(data));
+          })
+          .catch((e) => {
+            console.error(e.stack);
+            res.status(500).send(e.stack);
+          });          
   }
   else
   {
