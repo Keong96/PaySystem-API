@@ -210,7 +210,7 @@ app.get('/changelog/get', verifyToken, async (req, res) => {
             processedData.push(temp);
           }
 
-          const data = result.rows.slice(startIndex, endIndex);
+          const data = processedData.slice(startIndex, endIndex);
 
           res.json({
             currentPage: page,
