@@ -188,26 +188,26 @@ app.get('/changelog/get', verifyToken, async (req, res) => {
           for(var i = 0; i < result.rows.length; i++)
           {
             var temp = {};
-            temp['id'] = result.rows[0].id;
-            temp['uid'] = result.rows[0].uid;
+            temp['id'] = result.rows[i].id;
+            temp['uid'] = result.rows[i].uid;
 
             if(result.rows[0].request_type == 0)
             {
-              temp['address'] = result.rows[0].sender_address;
+              temp['address'] = result.rows[i].sender_address;
             }
             else
             {
-              temp['address'] = result.rows[0].receiver_address;
+              temp['address'] = result.rows[i].receiver_address;
             }
 
-            temp['before'] = result.rows[0].request_type;
+            temp['before'] = result.rows[i].request_type;
 
             temp['before'] = before;
-            temp['amount'] = result.rows[0].amount;
-            temp['after'] = before + result.rows[0].amount;
+            temp['amount'] = result.rows[i].amount;
+            temp['after'] = before + result.rows[i].amount;
 
             before = temp['after'];
-            temp['time'] = result.rows[0].datetime;
+            temp['time'] = result.rows[i].datetime;
 
             processedData.push(temp);
           }
