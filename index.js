@@ -105,41 +105,6 @@ app.post('/user/login', async (req, res) => {
         })
 })
 
-app.get('/home/get', verifyToken, async (req, res) => {
-  
-  if(req.user.userId == 1)
-  {
-    const data = [];
-
-    client.query("SELECT * FROM settings ORDER BY id ASC")
-          .then(async (result) => {
-
-            var walletString = result.rows[0].setting_value;
-            var wallet_address = walletString.split(',');
-
-            const promises = wallet_address.map(async (address) => {
-              const record = {};
-              record['wallet_address'] = address;
-              record['total_in'] = await getTotalIn(address);
-              record['total_out'] = await getTotalOut(address);
-              return record;
-            });
-        
-            const data = await Promise.all(promises);
-
-            res.send(JSON.stringify(data));
-          })
-          .catch((e) => {
-            console.error(e.stack);
-            res.status(500).send(e.stack);
-          });          
-  }
-  else
-  {
-    res.status(401).send("UnAuthorized");
-  }
-})
-
 async function getTotalIn(address)
 {
   const result = await client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE receiver_address = '"+address+"'")
@@ -206,6 +171,62 @@ app.get('/request/get/:type', verifyToken, async (req, res) => {
   }
 })
 
+app.get('/changelog/get', verifyToken, async (req, res) => {
+  
+  client.query("SELECT * FROM requests ORDER BY id ASC")
+        .then((result) => {
+           
+          const perPage = 15; // Number of items per page
+          const page = parseInt(req.query.page) || 1; // Current page number
+          const startIndex = (page - 1) * perPage;
+          const endIndex = page * perPage;
+          
+          var before = 0;
+
+          var processedData = [];
+
+          for(var i = 0; i < result.rows.length; i++)
+          {
+            var temp = {};
+            temp['order_id'] = result.rows[0].id;
+            temp['uid'] = result.rows[0].uid;
+
+            if(result.rows[0].request_type == 0)
+            {
+              temp['address'] = result.rows[0].sender_address;
+            }
+            else
+            {
+              temp['address'] = result.rows[0].receiver_address;
+            }
+
+            temp['before'] = before;
+            temp['amount'] = result.rows[0].amount;
+            temp['after'] = before + result.rows[0].amount;
+
+            before = temp['after'];
+            temp['time'] = result.rows[0].datetime;
+
+            processedData.push(temp);
+          }
+
+          const data = result.rows.slice(startIndex, endIndex);
+
+          res.json({
+            currentPage: page,
+            perPage: perPage,
+            totalItems: result.rows.length,
+            totalPages: Math.ceil(result.rows.length / perPage),
+            data: data
+          });
+
+        })
+        .catch((e) => {
+          console.error(e.stack);
+          res.status(500).send(e.stack);
+        })
+})
+
 app.get('/action_log/get', verifyToken, async (req, res) => {
   
   if(req.user.userId == 1)
@@ -249,17 +270,17 @@ app.get('/setting/get', verifyToken, async (req, res) => {
     client.query("SELECT * FROM settings ORDER BY id")
           .then((result) => {
            
-            // var wallet_address = result.rows[0].setting_value.split(',');
+            var wallet_address = result.rows[0].setting_value.split(',');
 
-            // for(var i = 0; i < wallet_address.length; i++)
-            // {
-            //   data['wallet_address'].push(wallet_address[i]);
-            // }
+            for(var i = 0; i < wallet_address.length; i++)
+            {
+              data['wallet_address'].push(wallet_address[i]);
+            }
 
-            // data['union_pay'] = result.rows[1].setting_value;
-            // data['auto_approve_amount'] = result.rows[2].setting_value;
+            data['union_pay'] = result.rows[1].setting_value;
+            data['auto_approve_amount'] = result.rows[2].setting_value;
 
-            // res.send(JSON.stringify(data));
+            res.send(JSON.stringify(data));
 
           })
           .catch((e) => {
