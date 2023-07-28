@@ -188,7 +188,7 @@ app.get('/changelog/get', verifyToken, async (req, res) => {
           for(var i = 0; i < result.rows.length; i++)
           {
             var temp = {};
-            temp['order_id'] = result.rows[0].id;
+            temp['id'] = result.rows[0].id;
             temp['uid'] = result.rows[0].uid;
 
             if(result.rows[0].request_type == 0)
@@ -199,6 +199,8 @@ app.get('/changelog/get', verifyToken, async (req, res) => {
             {
               temp['address'] = result.rows[0].receiver_address;
             }
+
+            temp['before'] = result.rows[0].request_type;
 
             temp['before'] = before;
             temp['amount'] = result.rows[0].amount;
