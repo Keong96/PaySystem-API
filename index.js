@@ -14,8 +14,15 @@ const config = {
 
 const { Client } = require('pg');
 const client = new Client(config);
-client.connect()
+client.connect();
 
+var mysql = require('mysql');
+
+var con = mysql.createConnection({
+  host: "119.45.167.2",
+  user: "admin",
+  password: "yamei666888@"
+});
 
 app.use(cors())
 app.use(bodyParser.json({limit: '50mb'}));
@@ -105,23 +112,9 @@ app.post('/user/login', async (req, res) => {
         })
 })
 
-async function getTotalIn(address)
-{
-  const result = await client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE receiver_address = '"+address+"'")
-  return result.rows[0].total_amount;
-}
-
-async function getTotalOut(address)
-{
-  const result = await client.query("SELECT SUM(amount) AS total_amount FROM requests WHERE sender_address = '"+address+"'")
-  return result.rows[0].total_amount;
-}
-
 app.get('/request/latest', verifyToken, async (req, res) => {
   
-  if(req.user.userId == 1)
-  {
-    client.query("SELECT * FROM requests ORDER BY datetime DESC LIMIT 5")
+  client.query("SELECT * FROM requests ORDER BY datetime DESC LIMIT 5")
           .then((result) => {
 
             res.send(JSON.stringify(result.rows));
@@ -131,44 +124,32 @@ app.get('/request/latest', verifyToken, async (req, res) => {
             console.error(e.stack);
             res.status(500).send(e.stack);
           })
-  }
-  else
-  {
-    res.status(401).send("UnAuthorized");
-  }
 })
 
 app.get('/request/get/:type', verifyToken, async (req, res) => {
   
-  if(req.user.userId == 1)
-  {
-    client.query("SELECT * FROM requests WHERE request_type = "+req.params.type+" ORDER BY id")
-          .then((result) => {
+  client.query("SELECT * FROM requests WHERE request_type = "+req.params.type+" ORDER BY id")
+  .then((result) => {
 
-            const perPage = 15; // Number of items per page
-            const page = parseInt(req.query.page) || 1; // Current page number
-            const startIndex = (page - 1) * perPage;
-            const endIndex = page * perPage;
+    const perPage = 15; // Number of items per page
+    const page = parseInt(req.query.page) || 1; // Current page number
+    const startIndex = (page - 1) * perPage;
+    const endIndex = page * perPage;
 
-            const data = result.rows.slice(startIndex, endIndex);
+    const data = result.rows.slice(startIndex, endIndex);
 
-            res.json({
-              currentPage: page,
-              perPage: perPage,
-              totalItems: result.rows.length,
-              totalPages: Math.ceil(result.rows.length / perPage),
-              data: data
-            });
-          })
-          .catch((e) => {
-            console.error(e.stack);
-            res.status(500).send(e.stack);
-          })
-  }
-  else
-  {
-    res.status(401).send("UnAuthorized");
-  }
+    res.json({
+      currentPage: page,
+      perPage: perPage,
+      totalItems: result.rows.length,
+      totalPages: Math.ceil(result.rows.length / perPage),
+      data: data
+    });
+  })
+  .catch((e) => {
+    console.error(e.stack);
+    res.status(500).send(e.stack);
+  })
 })
 
 app.get('/changelog/get', verifyToken, async (req, res) => {
@@ -231,9 +212,7 @@ app.get('/changelog/get', verifyToken, async (req, res) => {
 
 app.get('/action_log/get', verifyToken, async (req, res) => {
   
-  if(req.user.userId == 1)
-  {
-    client.query("SELECT * FROM action_log")
+  client.query("SELECT * FROM action_log")
           .then((result) => {
            
             const perPage = 15; // Number of items per page
@@ -256,18 +235,11 @@ app.get('/action_log/get', verifyToken, async (req, res) => {
             console.error(e.stack);
             res.status(500).send(e.stack);
           })
-  }
-  else
-  {
-    res.status(401).send("UnAuthorized");
-  }
 })
 
 app.get('/setting/get', verifyToken, async (req, res) => {
   
-  if(req.user.userId == 1)
-  {
-    var data = {};
+  var data = {};
 
     client.query("SELECT * FROM settings ORDER BY id")
           .then((result) => {
@@ -289,11 +261,6 @@ app.get('/setting/get', verifyToken, async (req, res) => {
             console.error(e.stack);
             res.status(500).send(e.stack);
           })
-  }
-  else
-  {
-    res.status(401).send("UnAuthorized");
-  }
 })
 
 app.get('/wallet_address/get', async (req, res) => {
@@ -330,18 +297,7 @@ const tronWeb = new TronWeb({
 });
 let abi = [process.env.CONTRACT_ABI];
 
-function eventListen()
-{
-  contract = tronWeb.contract(abi).at(contractAddress)
-                    .Deposit()
-                    .watch((err, event) => {
-                      if (err) {
-                        console.error('Error watching event:', err);
-                      } else {
-                        console.log('Event received:', event);
-                      }
-                    });
-}
+ListenToContract();
 
 app.get('/contract/balance', async (req, res) => {
   try {
@@ -376,7 +332,7 @@ app.post('/contract/withdraw', async (req, res) => {
   try {
 
     let contract = await tronWeb.contract(abi).at(contractAddress);
-    let result = await contract.withdraw(req.body.amount * 1000000).send();
+    let result = await contract.withdraw(req.body.recipient, req.body.amount * 1000000).send();
     
     res.json(result);
 
@@ -386,16 +342,57 @@ app.post('/contract/withdraw', async (req, res) => {
   }
 });
 
-app.post('/contract/transferFunds', async (req, res) => {
-  try {
+async function ListenToContract()
+{
+  let instance = await tronWeb.contract().at(contractAddress);
 
-    let contract = await tronWeb.contract(abi).at(contractAddress);
-    let result = await contract.transferFunds(req.body.recipient_address, req.body.amount * 1000000).send();
-    
-    res.json(result);
+  instance["Deposit"]().watch((err, eventResult) => {
+    if (err) {
+        return console.error('Error with "Deposit" event:', err);
+    }
+    if (eventResult) { 
+        console.log('eventResult:',eventResult);
 
-  } catch (error) {
-    console.error(error);
-    res.status(500).send(error.stack);
-  }
-});
+        client.query("INSERT INTO requests VALUES (0, "+tronWeb.address.fromHex(eventResult.account)+", "+contractAddress+", "+(eventResult.amount / 1000000)+", NOW(), "+eventResult.uid)
+        .then((result) => {
+          ModifyUserCoin((eventResult.amount / 1000000), eventResult.uid)
+        })
+        .catch((e) => {
+          console.error(e.stack);
+          res.status(500).send(e.stack);
+        })
+    }
+  });
+
+  instance["Withdrawal"]().watch((err, eventResult) => {
+    if (err) {
+        return console.error('Error with "Withdrawal" event:', err);
+    }
+    if (eventResult) { 
+        console.log('eventResult:',eventResult);
+
+        client.query("INSERT INTO requests VALUES (1, "+contractAddress+", "+tronWeb.address.fromHex(eventResult.account)+", "+(eventResult.amount / 1000000)+", NOW(), "+eventResult.uid)
+        .then((result) => {
+          ModifyUserCoin((eventResult.amount / 1000000), eventResult.uid)
+        })
+        .catch((e) => {
+          console.error(e.stack);
+          res.status(500).send(e.stack);
+        })
+    }
+  });
+}
+
+function ModifyUserCoin(amount, userId)
+{
+  con.connect(function(err) {
+    if (err) throw err;
+    console.log("Connected!");
+  
+    var sql = "UPDATE cmf_user SET score ="+amount+" WHERE id = "+userId+";";
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+      console.log("1 record updated");
+    });
+  });
+}
