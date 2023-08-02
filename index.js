@@ -131,7 +131,7 @@ app.get('/request/get/:type/:page', verifyToken, async (req, res) => {
   client.query("SELECT * FROM requests WHERE request_type = "+req.params.type+" ORDER BY id")
   .then((result) => {
 
-    const perPage = 15; // Number of items per page
+    const perPage = 10; // Number of items per page
     const page = parseInt(req.params.page) || 1; // Current page number
     const startIndex = (page - 1) * perPage;
     const endIndex = page * perPage;
@@ -165,7 +165,7 @@ app.get('/changelog/get/:page', verifyToken, async (req, res) => {
   client.query("SELECT * FROM requests ORDER BY id ASC")
         .then((result) => {
            
-          const perPage = 15; // Number of items per page
+          const perPage = 10; // Number of items per page
           const page = parseInt(req.params.page) || 1; // Current page number
           const startIndex = (page - 1) * perPage;
           const endIndex = page * perPage;
@@ -223,7 +223,7 @@ app.get('/action_log/get/:page', verifyToken, async (req, res) => {
   client.query("SELECT * FROM action_log")
           .then((result) => {
            
-            const perPage = 15; // Number of items per page
+            const perPage = 10; // Number of items per page
             const page = parseInt(req.params.page) || 1; // Current page number
             const startIndex = (page - 1) * perPage;
             const endIndex = page * perPage;
@@ -252,7 +252,7 @@ app.get('/setting/get/:page', verifyToken, async (req, res) => {
     client.query("SELECT * FROM settings ORDER BY id")
           .then((result) => {
            
-            const perPage = 15; // Number of items per page
+            const perPage = 10; // Number of items per page
             const page = parseInt(req.params.page) || 1; // Current page number
             const startIndex = (page - 1) * perPage;
             const endIndex = page * perPage;
@@ -291,7 +291,7 @@ app.get('/wallet_address/get/:page', async (req, res) => {
   client.query("SELECT * FROM settings ORDER BY id ASC")
         .then((result) => {
         
-          const perPage = 15; // Number of items per page
+          const perPage = 10; // Number of items per page
             const page = parseInt(req.params.page) || 1; // Current page number
             const startIndex = (page - 1) * perPage;
             const endIndex = page * perPage;
