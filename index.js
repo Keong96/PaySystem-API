@@ -137,7 +137,7 @@ app.get('/request/get/:type', verifyToken, async (req, res) => {
     const endIndex = page * perPage;
 
     const data = result.rows.slice(startIndex, endIndex);
-    const total = 0;
+    var total = 0;
     
     for(var i = 0; i < result.rows.length; i++)
     {
