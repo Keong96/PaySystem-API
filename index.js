@@ -164,7 +164,7 @@ app.get('/request/get/', verifyToken, async (req, res) => {
       total += result.rows[i]['amount'];
     }
 
-    res.header(
+    res.setHeader(
       'Allow-Access-Control-Header'
     );
     
