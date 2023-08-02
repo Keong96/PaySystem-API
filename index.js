@@ -126,13 +126,13 @@ app.get('/request/latest', verifyToken, async (req, res) => {
           })
 })
 
-app.get('/request/get/:type', verifyToken, async (req, res) => {
+app.get('/request/get/:type/:page', verifyToken, async (req, res) => {
   
   client.query("SELECT * FROM requests WHERE request_type = "+req.params.type+" ORDER BY id")
   .then((result) => {
 
     const perPage = 15; // Number of items per page
-    const page = parseInt(req.query.page) || 1; // Current page number
+    const page = parseInt(req.params.page) || 1; // Current page number
     const startIndex = (page - 1) * perPage;
     const endIndex = page * perPage;
 
@@ -160,13 +160,13 @@ app.get('/request/get/:type', verifyToken, async (req, res) => {
   })
 })
 
-app.get('/changelog/get', verifyToken, async (req, res) => {
+app.get('/changelog/get/:page', verifyToken, async (req, res) => {
   
   client.query("SELECT * FROM requests ORDER BY id ASC")
         .then((result) => {
            
           const perPage = 15; // Number of items per page
-          const page = parseInt(req.query.page) || 1; // Current page number
+          const page = parseInt(req.params.page) || 1; // Current page number
           const startIndex = (page - 1) * perPage;
           const endIndex = page * perPage;
           
@@ -218,13 +218,13 @@ app.get('/changelog/get', verifyToken, async (req, res) => {
         })
 })
 
-app.get('/action_log/get', verifyToken, async (req, res) => {
+app.get('/action_log/get/:page', verifyToken, async (req, res) => {
   
   client.query("SELECT * FROM action_log")
           .then((result) => {
            
             const perPage = 15; // Number of items per page
-            const page = parseInt(req.query.page) || 1; // Current page number
+            const page = parseInt(req.params.page) || 1; // Current page number
             const startIndex = (page - 1) * perPage;
             const endIndex = page * perPage;
 
@@ -245,24 +245,39 @@ app.get('/action_log/get', verifyToken, async (req, res) => {
           })
 })
 
-app.get('/setting/get', verifyToken, async (req, res) => {
+app.get('/setting/get/:page', verifyToken, async (req, res) => {
   
   var data = {};
 
     client.query("SELECT * FROM settings ORDER BY id")
           .then((result) => {
            
-            var wallet_address = result.rows[0].setting_value.split(',');
+            const perPage = 15; // Number of items per page
+            const page = parseInt(req.params.page) || 1; // Current page number
+            const startIndex = (page - 1) * perPage;
+            const endIndex = page * perPage;
 
-            for(var i = 0; i < wallet_address.length; i++)
-            {
-              data['wallet_address'].push(wallet_address[i]);
-            }
+            const data = result.rows.slice(startIndex, endIndex);
 
-            data['union_pay'] = result.rows[1].setting_value;
-            data['auto_approve_amount'] = result.rows[2].setting_value;
+            res.json({
+              currentPage: page,
+              perPage: perPage,
+              totalItems: result.rows.length,
+              totalPages: Math.ceil(result.rows.length / perPage),
+              data: data
+            });
 
-            res.send(JSON.stringify(data));
+            // var wallet_address = result.rows[0].setting_value.split(',');
+
+            // for(var i = 0; i < wallet_address.length; i++)
+            // {
+            //   data['wallet_address'].push(wallet_address[i]);
+            // }
+
+            // data['union_pay'] = result.rows[1].setting_value;
+            // data['auto_approve_amount'] = result.rows[2].setting_value;
+
+            // res.send(JSON.stringify(data));
 
           })
           .catch((e) => {
@@ -271,16 +286,31 @@ app.get('/setting/get', verifyToken, async (req, res) => {
           })
 })
 
-app.get('/wallet_address/get', async (req, res) => {
+app.get('/wallet_address/get/:page', async (req, res) => {
   
   client.query("SELECT * FROM settings ORDER BY id ASC")
         .then((result) => {
         
-          var walletString = result.rows[0].setting_value;
-          var wallet_address = walletString.split(',');
-          var random = Math.floor(Math.random() * wallet_address.length);
+          const perPage = 15; // Number of items per page
+            const page = parseInt(req.params.page) || 1; // Current page number
+            const startIndex = (page - 1) * perPage;
+            const endIndex = page * perPage;
 
-          res.send(JSON.stringify(wallet_address[random]));
+            const data = result.rows.slice(startIndex, endIndex);
+
+            res.json({
+              currentPage: page,
+              perPage: perPage,
+              totalItems: result.rows.length,
+              totalPages: Math.ceil(result.rows.length / perPage),
+              data: data
+            });
+            
+          // var walletString = result.rows[0].setting_value;
+          // var wallet_address = walletString.split(',');
+          // var random = Math.floor(Math.random() * wallet_address.length);
+
+          // res.send(JSON.stringify(wallet_address[random]));
 
         })
         .catch((e) => {
