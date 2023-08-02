@@ -133,8 +133,8 @@ app.get('/request/get/', verifyToken, async (req, res) => {
   const orderId = req.query.orderId;
   const sender = req.query.sender;
   const receiver = req.query.receiver;
-  const startTime = req.query.startTime || 0;
-  const endTime = req.query.endTime || GetCurrentTime();
+  const startTime = req.query.startTime;
+  const endTime = req.query.endTime;
   const amount = req.query.amount;
   
   var sql = "SELECT * FROM requests WHERE request_type = "+type;
@@ -146,8 +146,8 @@ app.get('/request/get/', verifyToken, async (req, res) => {
     sql += " AND receiver_address LIKE %"+receiver+"%";
   if(amount)
     sql += " AND amount = "+amount;
-
-  sql += " AND datetime BETWEEN '"+startTime+"' AND '"+endTime+"' ORDER BY datetime desc";
+  if(startTime && endTime)
+    sql += " AND datetime BETWEEN '"+startTime+"' AND '"+endTime+"' ORDER BY datetime desc";
 
   client.query(sql)
   .then((result) => {
