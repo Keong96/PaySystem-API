@@ -128,7 +128,6 @@ app.get('/request/latest', verifyToken, async (req, res) => {
 
 app.get('/request/get/', verifyToken, async (req, res) => {
   
-
   const page = req.query.page;
   const type = req.query.type;
   const orderId = req.query.orderId;
@@ -148,7 +147,7 @@ app.get('/request/get/', verifyToken, async (req, res) => {
   if(amount)
     sql += " AND amount = "+amount;
 
-  sql += " AND datetime BETWEEN "+startTime+" ABN "+endTime+" ORDER BY datetime desc";
+  sql += " AND datetime BETWEEN "+startTime+" AND "+endTime+" ORDER BY datetime desc";
 
   client.query(sql)
   .then((result) => {
