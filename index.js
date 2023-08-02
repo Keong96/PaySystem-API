@@ -137,13 +137,18 @@ app.get('/request/get/:type', verifyToken, async (req, res) => {
     const endIndex = page * perPage;
 
     const data = result.rows.slice(startIndex, endIndex);
-
+    const total = 0;
+    result.rows.forEach(item => {
+      total += item['amount'];
+   });
     res.json({
       currentPage: page,
       perPage: perPage,
       totalItems: result.rows.length,
       totalPages: Math.ceil(result.rows.length / perPage),
-      data: data
+      data: data,
+      total : total
+      
     });
   })
   .catch((e) => {
@@ -388,7 +393,7 @@ function ModifyUserCoin(amount, userId)
   con.connect(function(err) {
     if (err) throw err;
     console.log("Connected!");
-  
+
     var sql = "UPDATE cmf_user SET score ="+amount+" WHERE id = "+userId+";";
     con.query(sql, function (err, result) {
       if (err) throw err;
