@@ -140,18 +140,16 @@ app.get('/request/get/', verifyToken, async (req, res) => {
   
   var sql = "SELECT * FROM requests WHERE request_type = "+type;
   if(orderId)
-    sql += "AND id = "+orderId;
+    sql += " AND id = "+orderId;
   if(sender)
-    sql += "AND sender_address LIKE %"+sender+"%";
+    sql += " AND sender_address LIKE %"+sender+"%";
   if(receiver)
-    sql += "AND receiver_address LIKE %"+receiver+"%";
+    sql += " AND receiver_address LIKE %"+receiver+"%";
   if(amount)
-    sql += "AND amount = "+amount;
+    sql += " AND amount = "+amount;
 
-  sql += "AND datetime BETWEEN "+startTime+" ABD "+endTime+" ORDER BY datetime desc";
-  res.send(sql);
-  return;
-  
+  sql += " AND datetime BETWEEN "+startTime+" ABN "+endTime+" ORDER BY datetime desc";
+
   client.query(sql)
   .then((result) => {
 
