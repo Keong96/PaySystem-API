@@ -149,9 +149,6 @@ app.get('/request/get/', verifyToken, async (req, res) => {
   if(startTime && endTime)
     sql += " AND datetime BETWEEN '"+startTime+"' AND '"+endTime+"' ORDER BY datetime desc";
 
-  res.send(sql);
-  return;
-  
   client.query(sql)
   .then((result) => {
 
@@ -167,9 +164,10 @@ app.get('/request/get/', verifyToken, async (req, res) => {
       total += result.rows[i]['amount'];
     }
 
-    res.setHeader(
-      'Allow-Access-Control-Header'
-    );
+    res.header('Access-Control-Allow-Origin', "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    res.header("Access-Control-Allow-credentials", true);
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, UPDATE");
     
     res.json({
       currentPage: page,
