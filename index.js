@@ -133,7 +133,7 @@ app.get('/request/get/', verifyToken, async (req, res) => {
   const orderId = req.query.orderId;
   const sender = req.query.sender;
   const receiver = req.query.receiver;
-  const startTime = req.query.startTime || GetCurrentTime();
+  const startTime = req.query.startTime || 0;
   const endTime = req.query.endTime || GetCurrentTime();
   const amount = req.query.amount;
   
