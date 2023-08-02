@@ -128,7 +128,7 @@ app.get('/request/latest', verifyToken, async (req, res) => {
 
 app.get('/request/get/', verifyToken, async (req, res) => {
   
-  const page = req.query.page;
+  const page = req.query.page || 1;
   const type = req.query.type;
   const orderId = req.query.orderId;
   const sender = req.query.sender;
@@ -149,8 +149,6 @@ app.get('/request/get/', verifyToken, async (req, res) => {
   if(startTime && endTime)
     sql += " AND datetime BETWEEN '"+startTime+"' AND '"+endTime+"' ORDER BY datetime desc";
 
-  console.log(sql);
-  
   client.query(sql)
   .then((result) => {
 
