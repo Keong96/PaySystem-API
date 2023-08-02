@@ -141,9 +141,9 @@ app.get('/request/get/', verifyToken, async (req, res) => {
   if(orderId)
     sql += " AND id = "+orderId;
   if(sender)
-    sql += " AND sender_address LIKE %"+sender+"%";
+    sql += " AND sender_address LIKE '%"+sender+"%'";
   if(receiver)
-    sql += " AND receiver_address LIKE %"+receiver+"%";
+    sql += " AND receiver_address LIKE '%"+receiver+"%'";
   if(amount)
     sql += " AND amount = "+amount;
   if(startTime && endTime)
