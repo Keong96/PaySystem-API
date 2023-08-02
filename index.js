@@ -24,7 +24,7 @@ var con = mysql.createConnection({
   password: "yamei666888@"
 });
 
-app.use(cors())
+app.use(cors({ origin: true, credentials: true }))
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: false, parameterLimit:50000 }));
 
