@@ -149,6 +149,9 @@ app.get('/request/get/', verifyToken, async (req, res) => {
   if(startTime && endTime)
     sql += " AND datetime BETWEEN '"+startTime+"' AND '"+endTime+"' ORDER BY datetime desc";
 
+  res.send(sql);
+  return;
+  
   client.query(sql)
   .then((result) => {
 
