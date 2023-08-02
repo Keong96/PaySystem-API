@@ -126,13 +126,34 @@ app.get('/request/latest', verifyToken, async (req, res) => {
           })
 })
 
-app.get('/request/get/:type/:page', verifyToken, async (req, res) => {
+app.get('/request/get/', verifyToken, async (req, res) => {
   
-  client.query("SELECT * FROM requests WHERE request_type = "+req.params.type+" ORDER BY id")
+  const currentDatetime = Date.now();
+  const page = req.query.page;
+  const type = req.query.type;
+  const orderId = req.query.orderId;
+  const sender = req.query.sender;
+  const receiver = req.query.receiver;
+  const startTime = req.query.startTime || GetCurrentTime();
+  const endTime = req.query.endTime || GetCurrentTime();
+  const amount = req.query.amount;
+  
+  var sql = "SELECT * FROM requests WHERE request_type = "+type;
+  if(orderId)
+    sql += "AND id = "+orderId;
+  if(sender)
+    sql += "AND sender_address LIKE %"+sender+"%";
+  if(receiver)
+    sql += "AND receiver_address LIKE %"+receiver+"%";
+  if(amount)
+    sql += "AND amount = "+amount;
+
+  sql += "AND datetime BETWEEN "+startTime+" ABD "+endTime+" ORDER BY datetime desc";
+
+  client.query(sql)
   .then((result) => {
 
     const perPage = 10; // Number of items per page
-    const page = parseInt(req.params.page) || 1; // Current page number
     const startIndex = (page - 1) * perPage;
     const endIndex = page * perPage;
 
@@ -160,7 +181,7 @@ app.get('/request/get/:type/:page', verifyToken, async (req, res) => {
   })
 })
 
-app.get('/changelog/get/:page', verifyToken, async (req, res) => {
+app.get('/changelog/get/', verifyToken, async (req, res) => {
   
   client.query("SELECT * FROM requests ORDER BY id ASC")
         .then((result) => {
@@ -218,7 +239,7 @@ app.get('/changelog/get/:page', verifyToken, async (req, res) => {
         })
 })
 
-app.get('/action_log/get/:page', verifyToken, async (req, res) => {
+app.get('/action_log/get/', verifyToken, async (req, res) => {
   
   client.query("SELECT * FROM action_log")
           .then((result) => {
@@ -245,7 +266,7 @@ app.get('/action_log/get/:page', verifyToken, async (req, res) => {
           })
 })
 
-app.get('/setting/get/:page', verifyToken, async (req, res) => {
+app.get('/setting/get/', verifyToken, async (req, res) => {
   
   var data = {};
 
@@ -286,7 +307,7 @@ app.get('/setting/get/:page', verifyToken, async (req, res) => {
           })
 })
 
-app.get('/wallet_address/get/:page', async (req, res) => {
+app.get('/wallet_address/get/', async (req, res) => {
   
   client.query("SELECT * FROM settings ORDER BY id ASC")
         .then((result) => {
@@ -318,6 +339,15 @@ app.get('/wallet_address/get/:page', async (req, res) => {
           res.status(500).send(e.stack);
         })
 })
+
+function GetCurrentTime()
+{
+    const currentTimeStamp = Date.now();
+    const date = new Date(currentTimeStamp);
+    const formattedDateTime = date.toISOString().slice(0, 19).replace('T', ' ') + '.' + ('00' + date.getMilliseconds())
+
+    return formattedDateTime;
+}
 
 // -------------------------------------------------------------------------------------------------------------------------
 
