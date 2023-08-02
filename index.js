@@ -131,8 +131,8 @@ app.get('/request/get/', verifyToken, async (req, res) => {
   const page = req.query.page;
   const type = req.query.type;
   const orderId = req.query.orderId;
-  const sender = req.query.sender;
-  const receiver = req.query.receiver;
+  const sender = req.query.sender || new Date('1970-01-01');
+  const receiver = req.query.receiver || GetCurrentTime();
   const startTime = req.query.startTime;
   const endTime = req.query.endTime;
   const amount = req.query.amount;
@@ -164,6 +164,10 @@ app.get('/request/get/', verifyToken, async (req, res) => {
       total += result.rows[i]['amount'];
     }
 
+    res.header(
+      'Allow-Access-Control-Header'
+    );
+    
     res.json({
       currentPage: page,
       perPage: perPage,
@@ -171,7 +175,6 @@ app.get('/request/get/', verifyToken, async (req, res) => {
       totalPages: Math.ceil(result.rows.length / perPage),
       data: data,
       total : total
-      
     });
   })
   .catch((e) => {
