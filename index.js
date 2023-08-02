@@ -138,9 +138,12 @@ app.get('/request/get/:type', verifyToken, async (req, res) => {
 
     const data = result.rows.slice(startIndex, endIndex);
     const total = 0;
-    result.rows.forEach(item => {
-      total += item['amount'];
-   });
+    
+    for(var i = 0; i < result.rows.length; i++)
+    {
+      total += result.rows[i]['amount'];
+    }
+
     res.json({
       currentPage: page,
       perPage: perPage,
