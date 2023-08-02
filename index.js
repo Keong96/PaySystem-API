@@ -128,7 +128,7 @@ app.get('/request/latest', verifyToken, async (req, res) => {
 
 app.get('/request/get/', verifyToken, async (req, res) => {
   
-  const currentDatetime = Date.now();
+
   const page = req.query.page;
   const type = req.query.type;
   const orderId = req.query.orderId;
@@ -149,7 +149,9 @@ app.get('/request/get/', verifyToken, async (req, res) => {
     sql += "AND amount = "+amount;
 
   sql += "AND datetime BETWEEN "+startTime+" ABD "+endTime+" ORDER BY datetime desc";
-
+  res.send(sql);
+  return;
+  
   client.query(sql)
   .then((result) => {
 
