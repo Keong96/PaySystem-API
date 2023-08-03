@@ -189,7 +189,6 @@ app.get('/request/get/', verifyToken, async (req, res) => {
 app.get('/changelog/get/', verifyToken, async (req, res) => {
   
   const page = req.query.page || 1;
-  const type = req.query.type;
   const orderId = req.query.orderId;
   const sender = req.query.sender;
   const receiver = req.query.receiver;
@@ -197,9 +196,9 @@ app.get('/changelog/get/', verifyToken, async (req, res) => {
   const endTime = req.query.endTime;
   const amount = req.query.amount;
   
-  var sql = "SELECT * FROM requests WHERE request_type = "+type;
+  var sql = "SELECT * FROM requests WHERE"
   if(orderId)
-    sql += " AND id = "+orderId;
+    sql += " id = "+orderId;
   if(sender)
     sql += " AND sender_address LIKE '%"+sender+"%'";
   if(receiver)
