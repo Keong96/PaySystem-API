@@ -147,7 +147,7 @@ app.get('/request/get/', verifyToken, async (req, res) => {
   if(amount)
     sql += " AND amount = "+amount;
   if(startTime && endTime)
-    sql += " AND datetime BETWEEN '"+startTime+"' AND '"+endTime+"' ORDER BY datetime desc";
+    sql += " AND datetime BETWEEN '"+startTime+" 00:00:00' AND '"+endTime+" 23:59:59' ORDER BY datetime desc";
 
   client.query(sql)
   .then((result) => {
@@ -242,7 +242,7 @@ app.get('/changelog/get/', verifyToken, async (req, res) => {
         })
 })
 
-app.get('/action_log/get/', verifyToken, async (req, res) => {
+app.get('/actionlog/get/', verifyToken, async (req, res) => {
   
   client.query("SELECT * FROM action_log")
           .then((result) => {
