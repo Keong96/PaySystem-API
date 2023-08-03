@@ -235,16 +235,15 @@ app.get('/changelog/get/', verifyToken, async (req, res) => {
             temp['before'] = before;
             temp['amount'] = result.rows[i].amount;
             
-
             if(result.rows[0].request_type == 0)
             {
               temp['address'] = result.rows[i].sender_address;
-              temp['after'] = before + result.rows[i].amount;
+              temp['after'] = (before + result.rows[i].amount);
             }
             else
             {
               temp['address'] = result.rows[i].receiver_address;
-              temp['after'] = before - result.rows[i].amount;
+              temp['after'] = (before - result.rows[i].amount);
             }
 
             before = temp['after'];
@@ -299,37 +298,10 @@ app.get('/actionlog/get/', verifyToken, async (req, res) => {
 
 app.get('/setting/get/', verifyToken, async (req, res) => {
   
-  var data = {};
-
     client.query("SELECT * FROM settings ORDER BY id")
           .then((result) => {
            
-            const perPage = 10; // Number of items per page
-            const page = parseInt(req.params.page) || 1; // Current page number
-            const startIndex = (page - 1) * perPage;
-            const endIndex = page * perPage;
-
-            const data = result.rows.slice(startIndex, endIndex);
-
-            res.json({
-              currentPage: page,
-              perPage: perPage,
-              totalItems: result.rows.length,
-              totalPages: Math.ceil(result.rows.length / perPage),
-              data: data
-            });
-
-            // var wallet_address = result.rows[0].setting_value.split(',');
-
-            // for(var i = 0; i < wallet_address.length; i++)
-            // {
-            //   data['wallet_address'].push(wallet_address[i]);
-            // }
-
-            // data['union_pay'] = result.rows[1].setting_value;
-            // data['auto_approve_amount'] = result.rows[2].setting_value;
-
-            // res.send(JSON.stringify(data));
+            res.send(result.rows);
 
           })
           .catch((e) => {
@@ -338,32 +310,18 @@ app.get('/setting/get/', verifyToken, async (req, res) => {
           })
 })
 
-app.get('/wallet_address/get/', async (req, res) => {
+app.post('/setting/save/', verifyToken, async (req, res) => {
   
-  client.query("SELECT * FROM settings ORDER BY id ASC")
+  client.query("UPDATE settings SET setting_value ="+req.body.contract_address+"WHERE setting_name = 'contract_address'")
         .then((result) => {
-        
-          const perPage = 10; // Number of items per page
-            const page = parseInt(req.params.page) || 1; // Current page number
-            const startIndex = (page - 1) * perPage;
-            const endIndex = page * perPage;
-
-            const data = result.rows.slice(startIndex, endIndex);
-
-            res.json({
-              currentPage: page,
-              perPage: perPage,
-              totalItems: result.rows.length,
-              totalPages: Math.ceil(result.rows.length / perPage),
-              data: data
-            });
-            
-          // var walletString = result.rows[0].setting_value;
-          // var wallet_address = walletString.split(',');
-          // var random = Math.floor(Math.random() * wallet_address.length);
-
-          // res.send(JSON.stringify(wallet_address[random]));
-
+          client.query("UPDATE settings SET setting_value ="+req.body.exchange_rate+"WHERE setting_name = 'exchange_rate'")
+                .then((result2) => {
+                  res.send("OK"); 
+                })
+                .catch((e) => {
+                  console.error(e.stack);
+                  res.status(500).send(e.stack);
+                })
         })
         .catch((e) => {
           console.error(e.stack);
