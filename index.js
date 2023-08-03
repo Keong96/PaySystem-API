@@ -190,28 +190,28 @@ app.get('/changelog/get/', verifyToken, async (req, res) => {
   
   const page = req.query.page || 1;
   const orderId = req.query.orderId;
-  const sender = req.query.sender;
-  const receiver = req.query.receiver;
+  const address = req.query.address;
+  const uid = req.query.uid;
   const startTime = req.query.startTime;
   const endTime = req.query.endTime;
   const amount = req.query.amount;
   
   var sql = "SELECT * FROM requests"
   
-  if(orderId || sender || receiver || amount || startTime || endTime)
+  if(orderId || address || uid || amount || startTime || endTime || amount)
     sql += " WHERE";
 
   if(orderId)
     sql += " id = "+orderId;
-  if(sender)
-    sql += " AND sender_address LIKE '%"+sender+"%'";
-  if(receiver)
-    sql += " AND receiver_address LIKE '%"+receiver+"%'";
+  if(address)
+    sql += " AND (sender_address LIKE '%"+address+"%' OR receiver_address LIKE '%"+address+"%')";
+  if(uid)
+    sql += " AND uid = "+uid;
   if(amount)
     sql += " AND amount = "+amount;
   if(startTime && endTime)
     sql += " AND datetime BETWEEN '"+startTime+" 00:00:00' AND '"+endTime+" 23:59:59'";
-  
+ 
   sql += " ORDER BY id ASC";
 
   client.query(sql)
