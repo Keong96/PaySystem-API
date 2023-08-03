@@ -230,6 +230,7 @@ app.get('/changelog/get/', verifyToken, async (req, res) => {
             var temp = {};
             temp['id'] = result.rows[i].id;
             temp['uid'] = result.rows[i].uid;
+            temp['request_type'] = result.rows[i].request_type;
 
             if(result.rows[0].request_type == 0)
             {
