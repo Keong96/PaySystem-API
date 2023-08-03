@@ -232,20 +232,20 @@ app.get('/changelog/get/', verifyToken, async (req, res) => {
             temp['uid'] = result.rows[i].uid;
             temp['request_type'] = result.rows[i].request_type;
 
+            temp['before'] = before;
+            temp['amount'] = result.rows[i].amount;
+            
+
             if(result.rows[0].request_type == 0)
             {
               temp['address'] = result.rows[i].sender_address;
+              temp['after'] = before + result.rows[i].amount;
             }
             else
             {
               temp['address'] = result.rows[i].receiver_address;
+              temp['after'] = before - result.rows[i].amount;
             }
-
-            temp['before'] = result.rows[i].request_type;
-
-            temp['before'] = before;
-            temp['amount'] = result.rows[i].amount;
-            temp['after'] = before + result.rows[i].amount;
 
             before = temp['after'];
             temp['time'] = result.rows[i].datetime;
