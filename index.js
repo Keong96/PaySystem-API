@@ -154,7 +154,7 @@ app.get('/request/get/', verifyToken, async (req, res) => {
   client.query(sql)
         .then((result) => {
 
-          const perPage = 10; // Number of items per page
+          const perPage = 30; // Number of items per page
           const startIndex = (page - 1) * perPage;
           const endIndex = page * perPage;
 
@@ -217,7 +217,7 @@ app.get('/changelog/get/', verifyToken, async (req, res) => {
   client.query(sql)
         .then((result) => {
            
-          const perPage = 10; // Number of items per page
+          const perPage = 30; // Number of items per page
           const startIndex = (page - 1) * perPage;
           const endIndex = page * perPage;
           
@@ -274,7 +274,7 @@ app.get('/actionlog/get/', verifyToken, async (req, res) => {
   client.query("SELECT * FROM action_log")
           .then((result) => {
            
-            const perPage = 10; // Number of items per page
+            const perPage = 30; // Number of items per page
             const page = parseInt(req.params.page) || 1; // Current page number
             const startIndex = (page - 1) * perPage;
             const endIndex = page * perPage;
