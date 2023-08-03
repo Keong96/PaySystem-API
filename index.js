@@ -313,9 +313,9 @@ app.get('/setting/get/', verifyToken, async (req, res) => {
 
 app.post('/setting/save/', verifyToken, async (req, res) => {
   
-  client.query("UPDATE settings SET setting_value ='"+req.body.contract_address+"' WHERE setting_name = contract_address")
+  client.query("UPDATE settings SET setting_value ='"+req.body.contract_address+"' WHERE setting_name = 'contract_address'")
         .then((result) => {
-          client.query("UPDATE settings SET setting_value ="+req.body.exchange_rate+" WHERE setting_name = exchange_rate")
+          client.query("UPDATE settings SET setting_value ="+req.body.exchange_rate+" WHERE setting_name = 'exchange_rate'")
                 .then((result2) => {
                   res.send("OK"); 
                 })
