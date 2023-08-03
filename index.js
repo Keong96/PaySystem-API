@@ -133,6 +133,7 @@ app.get('/request/get/', verifyToken, async (req, res) => {
   const orderId = req.query.orderId;
   const sender = req.query.sender;
   const receiver = req.query.receiver;
+  const uid = req.query.uid;
   const startTime = req.query.startTime;
   const endTime = req.query.endTime;
   const amount = req.query.amount;
@@ -144,6 +145,8 @@ app.get('/request/get/', verifyToken, async (req, res) => {
     sql += " AND sender_address LIKE '%"+sender+"%'";
   if(receiver)
     sql += " AND receiver_address LIKE '%"+receiver+"%'";
+  if(amount)
+    sql += " AND uid = "+uid;
   if(amount)
     sql += " AND amount = "+amount;
   if(startTime && endTime)
