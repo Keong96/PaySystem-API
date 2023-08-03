@@ -196,7 +196,11 @@ app.get('/changelog/get/', verifyToken, async (req, res) => {
   const endTime = req.query.endTime;
   const amount = req.query.amount;
   
-  var sql = "SELECT * FROM requests WHERE"
+  var sql = "SELECT * FROM requests"
+  
+  if(orderId || sender || receiver || amount || startTime || endTime)
+    sql += " WHERE";
+
   if(orderId)
     sql += " id = "+orderId;
   if(sender)
@@ -255,7 +259,7 @@ app.get('/changelog/get/', verifyToken, async (req, res) => {
             perPage: perPage,
             totalItems: result.rows.length,
             totalPages: Math.ceil(result.rows.length / perPage),
-            data: data
+            data: data,
           });
 
         })
