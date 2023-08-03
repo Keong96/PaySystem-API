@@ -235,7 +235,7 @@ app.get('/changelog/get/', verifyToken, async (req, res) => {
             temp['before'] = before;
             temp['amount'] = result.rows[i].amount;
             
-            if(result.rows[0].request_type == 0)
+            if(result.rows[i].request_type == 0)
             {
               temp['address'] = result.rows[i].sender_address;
               temp['after'] = (before + result.rows[i].amount);
