@@ -147,7 +147,9 @@ app.get('/request/get/', verifyToken, async (req, res) => {
   if(amount)
     sql += " AND amount = "+amount;
   if(startTime && endTime)
-    sql += " AND datetime BETWEEN '"+startTime+" 00:00:00' AND '"+endTime+" 23:59:59' ORDER BY id asc";
+    sql += " AND datetime BETWEEN '"+startTime+" 00:00:00' AND '"+endTime+" 23:59:59'";
+  
+  sql += " ORDER BY id asc";
 
   client.query(sql)
   .then((result) => {
