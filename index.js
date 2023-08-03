@@ -300,9 +300,7 @@ app.get('/setting/get/', verifyToken, async (req, res) => {
   
     client.query("SELECT * FROM settings ORDER BY id")
           .then((result) => {
-           
             res.send(result.rows);
-
           })
           .catch((e) => {
             console.error(e.stack);
