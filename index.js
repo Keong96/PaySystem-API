@@ -149,36 +149,36 @@ app.get('/request/get/', verifyToken, async (req, res) => {
   if(startTime && endTime)
     sql += " AND datetime BETWEEN '"+startTime+" 00:00:00' AND '"+endTime+" 23:59:59'";
   
-  sql += " ORDER BY id asc";
+  sql += " ORDER BY id ASC";
 
   client.query(sql)
-  .then((result) => {
+        .then((result) => {
 
-    const perPage = 10; // Number of items per page
-    const startIndex = (page - 1) * perPage;
-    const endIndex = page * perPage;
+          const perPage = 10; // Number of items per page
+          const startIndex = (page - 1) * perPage;
+          const endIndex = page * perPage;
 
-    const data = result.rows.slice(startIndex, endIndex);
-    var total = 0;
-    
-    for(var i = 0; i < result.rows.length; i++)
-    {
-      total += result.rows[i]['amount'];
-    }
+          const data = result.rows.slice(startIndex, endIndex);
+          var total = 0;
+          
+          for(var i = 0; i < result.rows.length; i++)
+          {
+            total += result.rows[i]['amount'];
+          }
 
-    res.header('Access-Control-Allow-Origin', "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    res.header("Access-Control-Allow-credentials", true);
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, UPDATE");
-    
-    res.json({
-      currentPage: page,
-      perPage: perPage,
-      totalItems: result.rows.length,
-      totalPages: Math.ceil(result.rows.length / perPage),
-      data: data,
-      total : total
-    });
+          res.header('Access-Control-Allow-Origin', "*");
+          res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+          res.header("Access-Control-Allow-credentials", true);
+          res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, UPDATE");
+          
+          res.json({
+            currentPage: page,
+            perPage: perPage,
+            totalItems: result.rows.length,
+            totalPages: Math.ceil(result.rows.length / perPage),
+            data: data,
+            total : total
+          });
   })
   .catch((e) => {
     console.error(e.stack);
@@ -188,11 +188,33 @@ app.get('/request/get/', verifyToken, async (req, res) => {
 
 app.get('/changelog/get/', verifyToken, async (req, res) => {
   
-  client.query("SELECT * FROM requests ORDER BY id ASC")
+  const page = req.query.page || 1;
+  const type = req.query.type;
+  const orderId = req.query.orderId;
+  const sender = req.query.sender;
+  const receiver = req.query.receiver;
+  const startTime = req.query.startTime;
+  const endTime = req.query.endTime;
+  const amount = req.query.amount;
+  
+  var sql = "SELECT * FROM requests WHERE request_type = "+type;
+  if(orderId)
+    sql += " AND id = "+orderId;
+  if(sender)
+    sql += " AND sender_address LIKE '%"+sender+"%'";
+  if(receiver)
+    sql += " AND receiver_address LIKE '%"+receiver+"%'";
+  if(amount)
+    sql += " AND amount = "+amount;
+  if(startTime && endTime)
+    sql += " AND datetime BETWEEN '"+startTime+" 00:00:00' AND '"+endTime+" 23:59:59'";
+  
+  sql += " ORDER BY id ASC";
+
+  client.query(sql)
         .then((result) => {
            
           const perPage = 10; // Number of items per page
-          const page = parseInt(req.params.page) || 1; // Current page number
           const startIndex = (page - 1) * perPage;
           const endIndex = page * perPage;
           
