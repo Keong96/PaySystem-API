@@ -7,13 +7,6 @@ const PORT = process.env.PORT || 8082;
 require('dotenv').config();
 const TronWeb = require('tronweb');
 
-const WebSocket = require('ws');
-const wss = new WebSocket.Server({port: PORT});
-
-wss.on('connection', (ws) => {
-  ws.send("connected");
-});
-
 app.listen(PORT, () => {
   console.log(`listening on ${PORT}`);
 });
