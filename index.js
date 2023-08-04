@@ -6,12 +6,13 @@ const app = express();
 const PORT = process.env.PORT || 8082;
 require('dotenv').config();
 const TronWeb = require('tronweb');
+
 const WebSocket = require('ws');
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 wss.on('connection', (ws) => {
-  
+  ws.send("connected");
 });
 
 app.listen(PORT, () => {
