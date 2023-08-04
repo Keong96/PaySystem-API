@@ -6,6 +6,17 @@ const app = express();
 const PORT = process.env.PORT || 8082;
 require('dotenv').config();
 const TronWeb = require('tronweb');
+const WebSocket = require('ws');
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', (ws) => {
+  
+});
+
+app.listen(PORT, () => {
+  console.log(`listening on ${PORT}`);
+});
 
 const config = {
   connectionString:
@@ -59,12 +70,12 @@ function verifyToken(req, res, next) {
   }
 }
 
-app.listen(PORT, () => {
-  console.log(`listening on ${PORT}`);
-});
-
 app.get('/', async (req, res) => {
   res.status(200).send("OK");
+})
+
+app.get('/port/get', async (req, res) => {
+  res.status(200).send(PORT);
 })
 
 app.get('/user/get/:id', verifyToken, async (req, res) => {
@@ -492,7 +503,7 @@ function CheckAlarm(uid)
                 client.query("INSERT INTO alarms (uid, order_list, datetime, status) VALUES ("+uid+", "+JSON.stringify(order_list)+", NOW(), 0)");
               }
 
-              res.status(200).send("Trigger Alarm!");
+              wss.ws.send("abc");
             });
           }
   })
