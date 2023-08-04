@@ -491,8 +491,9 @@ function CheckAlarm(uid)
               {
                 client.query("INSERT INTO alarms (uid, order_list, datetime, status) VALUES ("+uid+", "+JSON.stringify(order_list)+", NOW(), 0)");
               }
-            });
 
+              res.status(200).send("Trigger Alarm!");
+            });
           }
   })
   .catch((e) => {
