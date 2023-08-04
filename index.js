@@ -8,8 +8,7 @@ require('dotenv').config();
 const TronWeb = require('tronweb');
 
 const WebSocket = require('ws');
-const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocket.Server({port: PORT});
 
 wss.on('connection', (ws) => {
   ws.send("connected");
