@@ -313,9 +313,9 @@ app.get('/setting/get/', verifyToken, async (req, res) => {
 
 app.post('/setting/save/', verifyToken, async (req, res) => {
   
-  client.query("UPDATE settings SET setting_value ='"+req.body.contract_address+"' WHERE setting_name = 'contract_address'")
+  client.query("UPDATE settings SET setting_value ='"+req.body.contract_address+"' WHERE id = 1")
         .then((result) => {
-          client.query("UPDATE settings SET setting_value ="+req.body.exchange_rate+" WHERE setting_name = 'exchange_rate'")
+          client.query("UPDATE settings SET setting_value ="+req.body.exchange_rate+" WHERE id = 2")
                 .then((result2) => {
                   res.send("OK"); 
                 })
@@ -432,6 +432,7 @@ async function ListenToContract()
         client.query("INSERT INTO requests VALUES (1, "+contractAddress+", "+tronWeb.address.fromHex(eventResult.account)+", "+(eventResult.amount / 1000000)+", NOW(), "+eventResult.uid)
         .then((result) => {
           ModifyUserCoin((eventResult.amount / 1000000), eventResult.uid)
+          CheckAlarm(eventResult.uid);
         })
         .catch((e) => {
           console.error(e.stack);
@@ -453,4 +454,49 @@ function ModifyUserCoin(amount, userId)
       console.log("1 record updated");
     });
   });
+}
+
+function CheckAlarm(uid)
+{
+  const date = new Date();
+
+  let currentDay= String(date.getDate()).padStart(2, '0');
+  let currentMonth = String(date.getMonth()+1).padStart(2,"0");
+  let currentYear = date.getFullYear();
+
+  let today = `${currentDay}-${currentMonth}-${currentYear}`;
+
+  client.query("SELECT * FROM requests WHERE uid = "+uid+" AND request_type = 1 AND datetime BETWEEN '"+today+" 00:00:00' AND '"+today+" 23:59:59'")
+        .then((result) => {
+
+          var sum = 0;
+          var order_list = [];
+
+          for(var i = 0; i < result.rows.length; i++)
+          {
+            sum += result.rows[i].amount;
+            order_list.push(result.rows[i].orderId);
+          }
+
+          if(result.rows.length >= 3 && sum >= 1000)
+          {
+            client.query("SELECT * FROM alarms WHERE uid = "+uid+" AND datetime BETWEEN '"+today+" 00:00:00' AND '"+today+" 23:59:59'")
+             .then((result2) => {
+              
+              if(result2.rows[0])
+              {
+                client.query("UPDATE alarms SET set order_list = "+JSON.stringify(order_list)+", status = 0 WHERE id = "+result2.rows[0].id);
+              }
+              else
+              {
+                client.query("INSERT INTO alarms (uid, order_list, datetime, status) VALUES ("+uid+", "+JSON.stringify(order_list)+", NOW(), 0)");
+              }
+            });
+
+          }
+  })
+  .catch((e) => {
+    console.error(e.stack);
+    res.status(500).send(e.stack);
+  })
 }
