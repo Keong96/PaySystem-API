@@ -329,7 +329,7 @@ app.get('/actionlog/get/', verifyToken, async (req, res) => {
 
 app.post('/actionlog/add/', verifyToken, async (req, res) => {
   
-  client.query("INSERT INTO action_log (user_id, action, datetime) VALUES ("+req.userId+", "+req.body.action+", NOW())")
+  client.query("INSERT INTO action_log (user_id, action, datetime) VALUES ("+req.userId+", '"+req.body.action+"', NOW())")
           .then((result) => {
             const perPage = 30; // Number of items per page
             const page = parseInt(req.params.page) || 1; // Current page number
