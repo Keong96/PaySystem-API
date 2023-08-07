@@ -321,7 +321,7 @@ app.post('/setting/save/', verifyToken, async (req, res) => {
         .then((result) => {
           client.query("UPDATE settings SET setting_value ="+req.body.exchange_rate+" WHERE id = 2")
                 .then((result2) => {
-                  res.send("OK"); 
+                  res.send("修改成功!"); 
                 })
                 .catch((e) => {
                   console.error(e.stack);
@@ -495,8 +495,6 @@ function CheckAlarm(uid)
               {
                 client.query("INSERT INTO alarms (uid, order_list, datetime, status) VALUES ("+uid+", "+JSON.stringify(order_list)+", NOW(), 0)");
               }
-
-              wss.ws.send("abc");
             });
           }
   })
