@@ -310,7 +310,9 @@ app.get('/actionlog/get/', verifyToken, async (req, res) => {
           {
             client.query("SELECT username FROM users WHERE id = "+data[i].user_id)
                   .then((result2) => {
+                    console.log("data[i].user_id = "+data[i].user_id);
                     data[i]['username'] = result2.rows[0];
+                    data[i].username = result2.rows[0];
             }); 
           }
 
