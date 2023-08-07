@@ -96,6 +96,7 @@ app.post('/user/login', async (req, res) => {
             const token = GenerateJWT(result.rows[0].id, result.rows[0].username);
 
             client.query("UPDATE users SET last_login = NOW() WHERE id = "+result.rows[0].id)
+            client.query("INSERT INTO action_log (user_id, action, datetime) VALUES ("+result.rows[0].id+", 'login', NOW())")
 
             res.status(200).json({
                 success: true,
@@ -325,18 +326,6 @@ app.get('/actionlog/get/', verifyToken, async (req, res) => {
           console.error(e.stack);
           res.status(500).send(e.stack);
         })
-})
-
-app.post('/actionlog/add/', verifyToken, async (req, res) => {
-  
-  client.query("INSERT INTO action_log (user_id, action, datetime) VALUES ("+req.userId+", '"+req.body.action+"', NOW())")
-          .then((result) => {
-           
-          })
-          .catch((e) => {
-            console.error(e.stack);
-            res.status(500).send(e.stack);
-          })
 })
 
 app.get('/alarm/get/', verifyToken, async (req, res) => {
