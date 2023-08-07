@@ -307,7 +307,20 @@ app.post('/actionlog/add/', verifyToken, async (req, res) => {
   
   client.query("INSERT INTO action_log (user_id, action, datetime) VALUES ("+req.userId+", "+req.body.action+", NOW())")
           .then((result) => {
+            const perPage = 30; // Number of items per page
+            const page = parseInt(req.params.page) || 1; // Current page number
+            const startIndex = (page - 1) * perPage;
+            const endIndex = page * perPage;
 
+            const data = result.rows.slice(startIndex, endIndex);
+
+            res.json({
+              currentPage: page,
+              perPage: perPage,
+              totalItems: result.rows.length,
+              totalPages: Math.ceil(result.rows.length / perPage),
+              data: data
+            });
           })
           .catch((e) => {
             console.error(e.stack);
