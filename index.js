@@ -310,7 +310,8 @@ app.get('/actionlog/get/', verifyToken, async (req, res) => {
             client.query("SELECT username FROM users WHERE id = "+data[i].user_id)
                   .then((result2) => {
                     data[i].username = result2.rows[0];
-          });
+            }); 
+          }
 
           res.json({
             currentPage: page,
@@ -319,7 +320,6 @@ app.get('/actionlog/get/', verifyToken, async (req, res) => {
             totalPages: Math.ceil(result.rows.length / perPage),
             data: data
           });
-
         })
         .catch((e) => {
           console.error(e.stack);
