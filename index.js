@@ -278,7 +278,24 @@ app.get('/changelog/get/', verifyToken, async (req, res) => {
 
 app.get('/actionlog/get/', verifyToken, async (req, res) => {
   
-  client.query("SELECT * FROM action_log")
+  var sql = "SELECT * FROM action_log"
+
+  const page = req.query.page || 1;
+  const action_id = req.query.action_id;
+  const user_id = req.query.user_id;
+  const startTime = req.query.startTime;
+  const endTime = req.query.endTime;
+  
+  if(action_id || user_id || startTime || endTime)
+    sql += " WHERE";
+  if(action_id)
+    sql += " id = "+action_id;
+  if(user_id)
+    sql += " AND user_id = "+user_id;
+  if(startTime && endTime)
+    sql += " AND datetime BETWEEN '"+startTime+" 00:00:00' AND '"+endTime+" 23:59:59'";
+
+  client.query(sql)
           .then((result) => {
            
             const perPage = 30; // Number of items per page
