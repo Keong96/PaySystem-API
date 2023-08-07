@@ -307,12 +307,24 @@ app.post('/actionlog/add/', verifyToken, async (req, res) => {
   
   client.query("INSERT INTO action_log (user_id, action, datetime) VALUES ("+req.userId+", "+req.body.action+", NOW())")
           .then((result) => {
-            
+
           })
           .catch((e) => {
             console.error(e.stack);
             res.status(500).send(e.stack);
           })
+})
+
+app.get('/alarm/get/', verifyToken, async (req, res) => {
+  
+  client.query("SELECT * FROM alarms ORDER BY id")
+        .then((result) => {
+          res.send(result.rows);
+        })
+        .catch((e) => {
+          console.error(e.stack);
+          res.status(500).send(e.stack);
+        })
 })
 
 app.get('/setting/get/', verifyToken, async (req, res) => {
