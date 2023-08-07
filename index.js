@@ -296,28 +296,35 @@ app.get('/actionlog/get/', verifyToken, async (req, res) => {
     sql += " AND datetime BETWEEN '"+startTime+" 00:00:00' AND '"+endTime+" 23:59:59'";
 
   client.query(sql)
-          .then((result) => {
+        .then((result) => {
            
-            const perPage = 30; // Number of items per page
-            const page = parseInt(req.params.page) || 1; // Current page number
-            const startIndex = (page - 1) * perPage;
-            const endIndex = page * perPage;
+          const perPage = 30; // Number of items per page
+          const page = parseInt(req.params.page) || 1; // Current page number
+          const startIndex = (page - 1) * perPage;
+          const endIndex = page * perPage;
 
-            const data = result.rows.slice(startIndex, endIndex);
+          const data = result.rows.slice(startIndex, endIndex);
 
-            res.json({
-              currentPage: page,
-              perPage: perPage,
-              totalItems: result.rows.length,
-              totalPages: Math.ceil(result.rows.length / perPage),
-              data: data
-            });
+          for(var i = 0; i < data.length; i++)
+          {
+            client.query("SELECT username FROM users WHERE id = "+data[i].user_id)
+                  .then((result2) => {
+                    data[i].username = result2.rows[0];
+          });
 
-          })
-          .catch((e) => {
-            console.error(e.stack);
-            res.status(500).send(e.stack);
-          })
+          res.json({
+            currentPage: page,
+            perPage: perPage,
+            totalItems: result.rows.length,
+            totalPages: Math.ceil(result.rows.length / perPage),
+            data: data
+          });
+
+        })
+        .catch((e) => {
+          console.error(e.stack);
+          res.status(500).send(e.stack);
+        })
 })
 
 app.post('/actionlog/add/', verifyToken, async (req, res) => {
