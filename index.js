@@ -310,7 +310,7 @@ app.get('/actionlog/get/', verifyToken, async (req, res) => {
           {
             client.query("SELECT username FROM users WHERE id = "+data[i].user_id)
                   .then((result2) => {
-                    data[i].username = result2.rows[0];
+                    data[i]['username'] = result2.rows[0];
             }); 
           }
 
@@ -358,6 +358,7 @@ app.post('/setting/save/', verifyToken, async (req, res) => {
         .then((result) => {
           client.query("UPDATE settings SET setting_value ="+req.body.exchange_rate+" WHERE id = 2")
                 .then((result2) => {
+                  client.query("INSERT INTO action_log (user_id, action, datetime) VALUES ("+req.userId+", 'changeSetting', NOW())")
                   res.send("修改成功!"); 
                 })
                 .catch((e) => {
