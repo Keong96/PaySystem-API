@@ -499,23 +499,43 @@ app.post('/getCoin', async (req, res) => {
              .then(result => {
                 if(result.ret[0].contractRet == "SUCCESS")
                 {
-                  client.query("SELECT * FROM alarms WHERE uid = "+uid+" AND datetime BETWEEN '"+today+" 00:00:00' AND '"+today+" 23:59:59'")
-                        .then((result) => {
+                  client.query("SELECT * FROM requests WHERE hash = "+hash)
+                        .then((result2) => {
 
-                          var sql = "UPDATE cmf_user SET score ="+amount+" WHERE id = "+userId+";";
-                          con.connect(function(err)
+                          if(result2.rows.length > 0)
                           {
-                            if (err) throw err;
-                              console.log("Connected!");
+                            res.send("错误：此订单已被领取");
+                          }
+                          else
+                          {
+                            var data = result.raw_data.contract[0].parameter.value.data;
 
-                              con.query(sql, function (err, result) {
-                                if (err) throw err;
-                                  console.log("Result: " + result);
-                              });
-                          });
+                            let half = Math.floor(data.length / 2);
+                            var uid = data.slice(0, half);
+                            var amount = data.slice(half, str.length);
 
-                          client.query("INSERT INTO requests (request_type, sender_address, receiver_address, amount, datetime, uid, hash) VALUES (0, )");
-                        });
+                            con.connect(function(err)
+                            {
+                              if (err) throw err;
+                                console.log("Connected!");
+
+                                con.query("SELECT amount FROM cmf_user WHERE id = "+uid, function (err, oldAmount) {
+                                  if (err) throw err;
+
+                                  var sql = "UPDATE cmf_user SET score ="+(oldAmount + amount)+" WHERE id = "+uid+";";
+                                  con.query(sql, function (err, result3) {
+                                    if (err) throw err;
+                                      console.log("Result: " + result3);
+                                      client.query("INSERT INTO requests (request_type, sender_address, receiver_address, amount, datetime, uid, hash) VALUES (0, '"+sender+"', '"+receiver+"', "+amount+", NOW(), '"+hash+"')");
+                                  });
+                                });
+                            });
+                          }
+                    });
+                }
+                else
+                {
+                  res.send("错误：此订单未完成");
                 }
              });
 });
