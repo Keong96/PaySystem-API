@@ -486,7 +486,7 @@ app.post('/getCoin', async (req, res) => {
                   client.query("SELECT * FROM requests WHERE hash = "+hash)
                         .then((result2) => {
 
-                          res.send("OK");
+                          res.send(result2.rows);
 
                           // if(result2.rows.length > 0)
                           // {
