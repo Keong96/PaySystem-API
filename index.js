@@ -486,24 +486,22 @@ app.post('/getCoin', async (req, res) => {
                   client.query("SELECT * FROM requests WHERE hash = '"+hash+"'")
                         .then((result2) => {
 
-                          res.send(result2.rows);
-
-                          // if(result2.rows.length > 0)
-                          // {
-                          //   res.send("错误：此订单已被领取");
-                          // }
-                          // else
-                          // {
-                          //   client.query("SELECT * FROM settings WHERE id = 2")
-                          //         .then((result3) => {
-                          //           const encodedData = result.raw_data.contract[0].parameter.value.data;
-                          //           const valueHex = "0x" + encodedData.substring(100);
-                          //           const amount = (parseInt(valueHex, 16) / 1000000);
-                          //           const rate = result3.rows[0].setting_value;
+                          if(result2.rows.length > 0)
+                          {
+                            res.send("错误：此订单已被领取");
+                          }
+                          else
+                          {
+                            client.query("SELECT * FROM settings WHERE id = 2")
+                                  .then((result3) => {
+                                    const encodedData = result.raw_data.contract[0].parameter.value.data;
+                                    const valueHex = "0x" + encodedData.substring(100);
+                                    const amount = (parseInt(valueHex, 16) / 1000000);
+                                    const rate = result3.rows[0].setting_value;
                               
 
-                              // var newAmount = (amount * rate).toFixed(2);
-                              // res.send("a = "+newAmount);
+                              var newAmount = (amount * rate).toFixed(2);
+                              res.send("a = "+newAmount);
                           });
                   //             con.connect(function(err)
                   //             {
