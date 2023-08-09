@@ -585,56 +585,56 @@ function CheckAlarm(uid)
 
 // GLYPAY -------------------------------------------------------------------------------------------------------------------------
 
-var authenticationServer = 'https://sb-sso.glypay.com';
-var restAPIServer = 'https://sb-api.glypay.com';
+// var authenticationServer = 'https://sb-sso.glypay.com';
+// var restAPIServer = 'https://sb-api.glypay.com';
 
-function CreateNewPayment(order)
-{
-    axios.post(authenticationServer+"/auth/token", {
-            grant_type : "client_credentials"
-        }, {
-            headers: {
-                'Authorization': `Basic ` + base64.encode(process.env.CLIENT_ID+":"+process.env.CLIENT_SECRET),
-                'Content-Type' : `application/x-www-form-urlencoded`,
-            }
-        })
-        .then(function (response) {
+// function CreateNewPayment(order)
+// {
+//     axios.post(authenticationServer+"/auth/token", {
+//             grant_type : "client_credentials"
+//         }, {
+//             headers: {
+//                 'Authorization': `Basic ` + base64.encode(process.env.CLIENT_ID+":"+process.env.CLIENT_SECRET),
+//                 'Content-Type' : `application/x-www-form-urlencoded`,
+//             }
+//         })
+//         .then(function (response) {
         
-            var payload = {
-                order : order,
-                storeId : process.env.STORE_ID,
-                type: "ECOMMERCE"
-            }
+//             var payload = {
+//                 order : order,
+//                 storeId : process.env.STORE_ID,
+//                 type: "ECOMMERCE"
+//             }
         
-            var bytes = utf8.encode(JSON.stringify(payload));
-            var encoded = base64.encode(bytes);
+//             var bytes = utf8.encode(JSON.stringify(payload));
+//             var encoded = base64.encode(bytes);
         
-            var unix = Math.round(+new Date()/1000);
-            var nonce = "Dpjczql20RuZRsUblzMB3hOjdPfiZZfS";
+//             var unix = Math.round(+new Date()/1000);
+//             var nonce = "Dpjczql20RuZRsUblzMB3hOjdPfiZZfS";
         
-            var param = "data="+encoded+"&timestamp="+unix+"&nonce="+nonce;
-            var hmac = crypto.createHmac("sha512", process.env.STORE_KEY);
-            var signed = hmac.update(new Buffer(param, 'utf-8')).digest("base64");
+//             var param = "data="+encoded+"&timestamp="+unix+"&nonce="+nonce;
+//             var hmac = crypto.createHmac("sha512", process.env.STORE_KEY);
+//             var signed = hmac.update(new Buffer(param, 'utf-8')).digest("base64");
         
-            axios.post(restAPIServer+"/payment/order", payload, {
-                headers: {
-                    'Authorization': `BEARER ${response.data.access_token}`,
-                    'x-signature' : signed,
-                    'x-timestamp' : unix,
-                    'x-nonce' : nonce,
-                }
-              })
-                .then(function (response2) {
-                    console.log(response2.data);
-              })
-                .catch(function (error) {
-                    console.log(error);
-              });
-        })
-        .catch(function (error) {
-            console.log(error);
-    });
-}
+//             axios.post(restAPIServer+"/payment/order", payload, {
+//                 headers: {
+//                     'Authorization': `BEARER ${response.data.access_token}`,
+//                     'x-signature' : signed,
+//                     'x-timestamp' : unix,
+//                     'x-nonce' : nonce,
+//                 }
+//               })
+//                 .then(function (response2) {
+//                     console.log(response2.data);
+//               })
+//                 .catch(function (error) {
+//                     console.log(error);
+//               });
+//         })
+//         .catch(function (error) {
+//             console.log(error);
+//     });
+// }
 
 // function VoidPayment(transaction_id, amount, reason)
 // {
