@@ -480,8 +480,8 @@ app.get('/test', async (req, res) => {
              .then(result => {
               const combined_hex = result.raw_data.contract[0].parameter.value.data;
 
-              const uidHex = combinedHex.substring(0, 64);
-              const amountHex = combinedHex.substring(64);
+              const uidHex = combined_hex.substring(0, 64);
+              const amountHex = combined_hex.substring(64);
               
               const uidDecimal = parseInt(uidHex, 16);
               const amountDecimal = parseInt(amountHex, 16);
