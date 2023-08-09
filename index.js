@@ -434,7 +434,9 @@ app.get('/test', async (req, res) => {
   
   let contract = await tronWeb.contract(abi).at(contractAddress);
   tronWeb.trx.getTransaction("3a875147518a55a1c57a114f630043fc8615b183cf43d2b2e82c83c1924b8c8d")
-             .then(result => {console.log(result)});
+             .then(result => {
+              res.send(result);
+             });
 
 });
 
