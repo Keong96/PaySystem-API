@@ -484,7 +484,9 @@ app.get('/test', async (req, res) => {
               var uid = data.slice(0, half);
               var amount = data.slice(half, str.length);
 
-              res.send("uid = "+uid+", amount = "+amount);
+              var aaa = "uid = "+uid+" amount = "+amount;
+
+              res.send(aaa);
              });
 
 });
@@ -497,17 +499,23 @@ app.post('/getCoin', async (req, res) => {
              .then(result => {
                 if(result.ret[0].contractRet == "SUCCESS")
                 {
-                  var sql = "UPDATE cmf_user SET score ="+amount+" WHERE id = "+userId+";";
-                  con.connect(function(err) {
-                    if (err) throw err;
-                    console.log("Connected!");
-                    con.query(sql, function (err, result) {
-                      if (err) throw err;
-                      console.log("Result: " + result);
-                    });
-                  });
+                  client.query("SELECT * FROM alarms WHERE uid = "+uid+" AND datetime BETWEEN '"+today+" 00:00:00' AND '"+today+" 23:59:59'")
+                        .then((result) => {
 
-                  
+                          var sql = "UPDATE cmf_user SET score ="+amount+" WHERE id = "+userId+";";
+                          con.connect(function(err)
+                          {
+                            if (err) throw err;
+                              console.log("Connected!");
+
+                              con.query(sql, function (err, result) {
+                                if (err) throw err;
+                                  console.log("Result: " + result);
+                              });
+                          });
+
+                          client.query("INSERT INTO requests (request_type, sender_address, receiver_address, amount, datetime, uid, hash) VALUES (0, )");
+                        });
                 }
              });
 });
