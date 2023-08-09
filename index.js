@@ -26,7 +26,7 @@ var mysql = require('mysql');
 
 var con = mysql.createConnection({
   host: "119.45.167.2",
-  user: "root",
+  user: "admin",
   password: "yamei666888@"
 });
 
@@ -505,11 +505,13 @@ app.post('/getCoin', async (req, res) => {
                                       if (err) throw err;
                                         console.log("Connected!");
                                         
-                                        con.query("SELECT amount FROM cmf_user WHERE id = "+req.body.userId, function (err, result4) {
+                                        var sql = `SELECT amount FROM cmf_user WHERE id = ` + req.body.uid;
+
+                                        con.query(sql, function (err, result4) {
                                           if (err) throw err;
 
                                           res.send("a ="+result4);
-                                          //var sql = "UPDATE cmf_user SET score ="+(oldAmount + newAmount)+" WHERE id = "+req.userId+";";
+                                          //var sql = "UPDATE cmf_user SET score ="+(oldAmount + newAmount)+" WHERE id = "+req.uid+";";
                                         });
                                     });
                             });
