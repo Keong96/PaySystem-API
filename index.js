@@ -459,7 +459,7 @@ app.post('/contract/deposit', async (req, res) => {
   try {
 
     let contract = await tronWeb.contract(abi).at(contractAddress);
-    let result = await contract.deposit(req.body.amount * 1000000).send();
+    let result = await contract.deposit(req.body.uid, (req.body.amount * 1000000)).send();
     
     res.json(result);
 
@@ -473,7 +473,7 @@ app.post('/contract/withdraw', async (req, res) => {
   try {
 
     let contract = await tronWeb.contract(abi).at(contractAddress);
-    let result = await contract.withdraw(req.body.recipient, req.body.amount * 1000000).send();
+    let result = await contract.withdraw(req.body.recipient, req.body.uid, (req.body.amount * 1000000)).send();
     
     res.json(result);
 
