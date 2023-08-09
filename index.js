@@ -511,10 +511,10 @@ app.post('/getCoin', async (req, res) => {
                                         con.query(sql, function (err, result4) {
                                           if (err) throw err;
 
-                                          var sql = "UPDATE cmf_user SET score ="+(JSON.stringify(result4[0].score) + newAmount)+" WHERE id = "+req.uid+";";
+                                          var sql = "UPDATE cmf_user SET score = "+(JSON.stringify(result4[0].score) + newAmount)+" WHERE id = "+req.body.uid+";";
                                           con.query(sql, function (err, result3) {
                                             if (err) throw err;
-                                              console.log("Result: " + result3);
+
                                               client.query("INSERT INTO requests (request_type, sender_address, receiver_address, amount, datetime, uid, hash) VALUES (0, '"+sender+"', '"+receiver+"', "+amount+", NOW(), '"+hash+"')");
                                           });
                                         });
