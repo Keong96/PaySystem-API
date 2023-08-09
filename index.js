@@ -478,7 +478,56 @@ app.post('/getCoin', async (req, res) => {
 
   var hash = req.body.hash;
 
-  
+  tronWeb.trx.getTransaction(hash)
+             .then(result => {
+                if(result.ret[0].contractRet == "SUCCESS")
+                {
+                  res.send("OK");
+                  // client.query("SELECT * FROM requests WHERE hash = "+hash)
+                  //       .then((result2) => {
+
+                  //         if(result2.rows.length > 0)
+                  //         {
+                  //           res.send("错误：此订单已被领取");
+                  //         }
+                  //         else
+                  //         {
+                  //           client.query("SELECT * FROM settings WHERE id = 2")
+                  //                 .then((result3) => {
+                  //                   const encodedData = result.raw_data.contract[0].parameter.value.data;
+                  //                   const valueHex = "0x" + encodedData.substring(100);
+                  //                   const amount = (parseInt(valueHex, 16) / 1000000);
+                  //                   const rate = result3.rows[0].setting_value;
+                              
+                  //             var newAmount = (amount * rate).toFixed(2);
+
+                  //             con.connect(function(err)
+                  //             {
+                  //               if (err) throw err;
+                  //                 console.log("Connected!");
+                                  
+                  //                 con.query("SELECT amount FROM cmf_user WHERE id = "+req.body.userId, function (err, oldAmount) {
+                  //                   if (err) throw err;
+
+                  //                   res.send("abc = "+oldAmount);
+
+                  //                   // var sql = "UPDATE cmf_user SET score ="+(oldAmount + newAmount)+" WHERE id = "+req.userId+";";
+                  //                   // con.query(sql, function (err, result3) {
+                  //                   //   if (err) throw err;
+                  //                   //     console.log("Result: " + result3);
+                  //                   //     client.query("INSERT INTO requests (request_type, sender_address, receiver_address, amount, datetime, uid, hash) VALUES (0, '"+sender+"', '"+receiver+"', "+amount+", NOW(), '"+hash+"')");
+                  //                   // });
+                  //                 });
+                  //             });
+                  //           });
+                  //       }
+                  //   });
+                }
+                else
+                {
+                  res.send("错误：此订单未完成");
+                }
+             });
 });
 
 app.get('/contract/balance', async (req, res) => {
