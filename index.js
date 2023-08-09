@@ -480,7 +480,7 @@ app.post('/getCoin', async (req, res) => {
 
   tronWeb.trx.getTransaction(hash)
              .then(result => {
-                res.send("result = "+result);
+                res.send(result.ret[0].contractRet);
                 if(result.ret[0].contractRet == "SUCCESS")
                 {
                   // client.query("SELECT * FROM requests WHERE hash = "+hash)
