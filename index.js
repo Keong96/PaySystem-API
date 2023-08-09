@@ -479,11 +479,9 @@ app.get('/test', async (req, res) => {
   tronWeb.trx.getTransaction("3a875147518a55a1c57a114f630043fc8615b183cf43d2b2e82c83c1924b8c8d")
              .then(result => {
 
-              const encodedData  = result.raw_data.contract[0].parameter.value.data;
-              const toAddress = "0x" + encodedData.substring(36, 100); // 64 characters starting from 36
+              const encodedData = result.raw_data.contract[0].parameter.value.data;
               const valueHex = "0x" + encodedData.substring(100);
 
-              // Convert _value from hex to decimal
               const valueDecimal = parseInt(valueHex, 16);
               res.send(valueDecimal);
               
