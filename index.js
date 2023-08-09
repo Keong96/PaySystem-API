@@ -501,40 +501,39 @@ app.post('/getCoin', async (req, res) => {
                               
 
                               var newAmount = (amount * rate).toFixed(2);
-                              res.send("a = "+newAmount);
                             });
                           }
 
-                          //             con.connect(function(err)
-                  //             {
-                  //               if (err) throw err;
-                  //                 console.log("Connected!");
-                                  
-                  //                 con.query("SELECT amount FROM cmf_user WHERE id = "+req.body.userId, function (err, oldAmount) {
-                  //                   if (err) throw err;
+                  con.connect(function(err)
+                  {
+                    if (err) throw err;
+                      console.log("Connected!");
+                      
+                      con.query("SELECT amount FROM cmf_user WHERE id = "+req.body.userId, function (err, oldAmount) {
+                        if (err) throw err;
 
-                  //                   res.send("abc = "+oldAmount);
+                        res.send("a ="+oldAmount);
+                        var sql = "UPDATE cmf_user SET score ="+(oldAmount + newAmount)+" WHERE id = "+req.userId+";";
 
-                  //                   // var sql = "UPDATE cmf_user SET score ="+(oldAmount + newAmount)+" WHERE id = "+req.userId+";";
-                  //                   // con.query(sql, function (err, result3) {
-                  //                   //   if (err) throw err;
-                  //                   //     console.log("Result: " + result3);
-                  //                   //     client.query("INSERT INTO requests (request_type, sender_address, receiver_address, amount, datetime, uid, hash) VALUES (0, '"+sender+"', '"+receiver+"', "+amount+", NOW(), '"+hash+"')");
-                  //                   // });
-                  //                 });
-                  //             });
-                  //           });
-                  //       }
-                  //   });
-              //   }
+                        // con.query(sql, function (err, result3) {
+                        //   if (err) throw err;
+                        //     console.log("Result: " + result3);
+                        //     client.query("INSERT INTO requests (request_type, sender_address, receiver_address, amount, datetime, uid, hash) VALUES (0, '"+sender+"', '"+receiver+"', "+amount+", NOW(), '"+hash+"')");
+                        // });
+                                      //   }
               //   else
               //   {
               //     res.send("错误：此订单未完成");
               //   }
               // }
-                    });
-                  }
-             });
+                      });
+                  });
+                                    
+                 
+
+                });
+              }
+    });
 });
 
 app.get('/contract/balance', async (req, res) => {
