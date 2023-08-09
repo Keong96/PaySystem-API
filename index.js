@@ -304,15 +304,13 @@ app.get('/actionlog/get/', verifyToken, async (req, res) => {
           const startIndex = (page - 1) * perPage;
           const endIndex = page * perPage;
 
-          const data = result.rows.slice(startIndex, endIndex);
+          var data = result.rows.slice(startIndex, endIndex);
 
           for(var i = 0; i < data.length; i++)
           {
             client.query("SELECT username FROM users WHERE id = "+data[i].user_id)
                   .then((result2) => {
-                    console.log("data[i].user_id = "+data[i].user_id);
                     data[i]['username'] = result2.rows[0];
-                    data[i].username = result2.rows[0];
             }); 
           }
 
