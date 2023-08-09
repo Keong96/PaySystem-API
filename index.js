@@ -6,6 +6,8 @@ const app = express();
 const PORT = process.env.PORT || 8082;
 require('dotenv').config();
 const TronWeb = require('tronweb');
+var base64 = require('base-64');
+var utf8 = require('utf8');
 
 app.listen(PORT, () => {
   console.log(`listening on ${PORT}`);
@@ -374,6 +376,30 @@ app.post('/setting/save/', verifyToken, async (req, res) => {
         })
 })
 
+app.post('/createPayment', async (req, res) => {
+  
+    var customer = {
+        contact : req.body.contact,
+        email : "",
+        memberReferenceNo : req.body.userId,
+        name : req.body.username,
+    }
+
+    var order = {
+        amount : 100,
+        callbackUrl : "www.google.com",
+        currency : "MYR",
+        customer : customer,
+        description : "购买金币",
+        orderReferenceNo : req.body.orderReferenceNo,
+        redirectUrl : "",
+        remarks : "",
+        title : "充值",
+    }
+
+    CreateNewPayment(order);
+})
+
 function GetCurrentTime()
 {
     const currentTimeStamp = Date.now();
@@ -403,6 +429,14 @@ const tronWeb = new TronWeb({
 let abi = [process.env.CONTRACT_ABI];
 
 ListenToContract();
+
+app.get('/test/', async (req, res) => {
+  
+  let contract = await tronWeb.contract(abi).at(contractAddress);
+  tronWeb.trx.getTransaction("3a875147518a55a1c57a114f630043fc8615b183cf43d2b2e82c83c1924b8c8d")
+             .then(result => {console.log(result)});
+
+});
 
 app.get('/contract/balance', async (req, res) => {
   try {
@@ -546,3 +580,212 @@ function CheckAlarm(uid)
     res.status(500).send(e.stack);
   })
 }
+
+// GLYPAY -------------------------------------------------------------------------------------------------------------------------
+
+var authenticationServer = 'https://sb-sso.glypay.com';
+var restAPIServer = 'https://sb-api.glypay.com';
+
+function CreateNewPayment(order)
+{
+    axios.post(authenticationServer+"/auth/token", {
+            grant_type : "client_credentials"
+        }, {
+            headers: {
+                'Authorization': `Basic ` + base64.encode(process.env.CLIENT_ID+":"+process.env.CLIENT_SECRET),
+                'Content-Type' : `application/x-www-form-urlencoded`,
+            }
+        })
+        .then(function (response) {
+        
+            var payload = {
+                order : order,
+                storeId : process.env.STORE_ID,
+                type: "ECOMMERCE"
+            }
+        
+            var bytes = utf8.encode(JSON.stringify(payload));
+            var encoded = base64.encode(bytes);
+        
+            var unix = Math.round(+new Date()/1000);
+            var nonce = "Dpjczql20RuZRsUblzMB3hOjdPfiZZfS";
+        
+            var param = "data="+encoded+"&timestamp="+unix+"&nonce="+nonce;
+            var hmac = crypto.createHmac("sha512", process.env.STORE_KEY);
+            var signed = hmac.update(new Buffer(param, 'utf-8')).digest("base64");
+        
+            axios.post(restAPIServer+"/payment/order", payload, {
+                headers: {
+                    'Authorization': `BEARER ${response.data.access_token}`,
+                    'x-signature' : signed,
+                    'x-timestamp' : unix,
+                    'x-nonce' : nonce,
+                }
+              })
+                .then(function (response2) {
+                    console.log(response2.data);
+              })
+                .catch(function (error) {
+                    console.log(error);
+              });
+        })
+        .catch(function (error) {
+            console.log(error);
+    });
+}
+
+// function VoidPayment(transaction_id, amount, reason)
+// {
+//     axios.post(authenticationServer+"/auth/token", {
+//             grant_type : "client_credentials"
+//         }, {
+//             headers: {
+//                 'Authorization': `Basic ` + base64.encode(process.env.CLIENT_ID+":"+process.env.CLIENT_SECRET),
+//                 'Content-Type' : `application/x-www-form-urlencoded`,
+//             }
+//         })
+//         .then(function (response) {
+        
+//             var payload = {
+//                 amount : amount,
+//                 currency : "MYR",
+//                 reason : reason,
+//                 transactionId : transaction_id
+//             }
+        
+//             var bytes = utf8.encode(JSON.stringify(payload));
+//             var encoded = base64.encode(bytes);
+        
+//             var unix = Math.round(+new Date()/1000);
+//             var nonce = "Dpjczql20RuZRsUblzMB3hOjdPfiZZfS";
+        
+//             var param = "data="+encoded+"&timestamp="+unix+"&nonce="+nonce;
+//             var hmac = crypto.createHmac("sha512", process.env.STORE_KEY);
+//             var signed = hmac.update(new Buffer(param, 'utf-8')).digest("base64");
+        
+//             axios.post(restAPIServer+"/payment/order/transaction/void", payload, {
+//                 headers: {
+//                     'Authorization': `BEARER ${response.data.access_token}`,
+//                     'x-signature' : signed,
+//                     'x-timestamp' : unix,
+//                     'x-nonce' : nonce,
+//                 }
+//               })
+//                 .then(function (response2) {
+//                     console.log(response2.data);
+//               })
+//                 .catch(function (error) {
+//                     console.log(error);
+//               });
+//         })
+//         .catch(function (error) {
+//             console.log(error);
+//     });
+// }
+
+// function RefundPayment(transaction_id, amount, reason)
+// {
+//     axios.post(authenticationServer+"/auth/token", {
+//             grant_type : "client_credentials"
+//         }, {
+//             headers: {
+//                 'Authorization': `Basic ` + base64.encode(process.env.CLIENT_ID+":"+process.env.CLIENT_SECRET),
+//                 'Content-Type' : `application/x-www-form-urlencoded`,
+//             }
+//         })
+//         .then(function (response) {
+        
+//             var payload = {
+//                 amount : amount,
+//                 currency : "MYR",
+//                 reason : reason,
+//                 transactionId : transaction_id
+//             }
+        
+//             var bytes = utf8.encode(JSON.stringify(payload));
+//             var encoded = base64.encode(bytes);
+        
+//             var unix = Math.round(+new Date()/1000);
+//             var nonce = "Dpjczql20RuZRsUblzMB3hOjdPfiZZfS";
+        
+//             var param = "data="+encoded+"&timestamp="+unix+"&nonce="+nonce;
+//             var hmac = crypto.createHmac("sha512", process.env.STORE_KEY);
+//             var signed = hmac.update(new Buffer(param, 'utf-8')).digest("base64");
+        
+//             axios.post(restAPIServer+"/payment/order/transaction/void", payload, {
+//                 headers: {
+//                     'Authorization': `BEARER ${response.data.access_token}`,
+//                     'x-signature' : signed,
+//                     'x-timestamp' : unix,
+//                     'x-nonce' : nonce,
+//                 }
+//               })
+//                 .then(function (response2) {
+//                     console.log(response2.data);
+//               })
+//                 .catch(function (error) {
+//                     console.log(error);
+//               });
+//         })
+//         .catch(function (error) {
+//             console.log(error);
+//     });
+// }
+
+// function GetStatusByTransaction(transaction_id)
+// {
+//     axios.post(authenticationServer+"/auth/token", {
+//             grant_type : "client_credentials"
+//         }, {
+//             headers: {
+//                 'Authorization': `Basic ` + base64.encode(process.env.CLIENT_ID+":"+process.env.CLIENT_SECRET),
+//                 'Content-Type' : `application/x-www-form-urlencoded`,
+//             }
+//         })
+//         .then(function (response) {
+        
+//             axios.get(restAPIServer+"/payment/order/transaction/"+transaction_id, {
+//                 headers: {
+//                     'Authorization': `BEARER ${response.data.access_token}`,
+//                 }
+//               })
+//                 .then(function (response2) {
+//                     console.log(response2.data);
+//               })
+//                 .catch(function (error) {
+//                     console.log(error);
+//               });
+//         })
+//         .catch(function (error) {
+//             console.log(error);
+//     });
+// }
+
+// function GetStatusByOrder(orderReferenceNo)
+// {
+//     axios.post(authenticationServer+"/auth/token", {
+//             grant_type : "client_credentials"
+//         }, {
+//             headers: {
+//                 'Authorization': `Basic ` + base64.encode(process.env.CLIENT_ID+":"+process.env.CLIENT_SECRET),
+//                 'Content-Type' : `application/x-www-form-urlencoded`,
+//             }
+//         })
+//         .then(function (response) {
+        
+//             axios.get(restAPIServer+"/payment/order/"+orderReferenceNo, {
+//                 headers: {
+//                     'Authorization': `BEARER ${response.data.access_token}`,
+//                 }
+//               })
+//                 .then(function (response2) {
+//                     console.log(response2.data);
+//               })
+//                 .catch(function (error) {
+//                     console.log(error);
+//               });
+//         })
+//         .catch(function (error) {
+//             console.log(error);
+//     });
+// }
