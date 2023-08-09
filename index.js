@@ -304,7 +304,8 @@ app.get('/actionlog/get/', verifyToken, async (req, res) => {
           const startIndex = (page - 1) * perPage;
           const endIndex = page * perPage;
 
-          var data = result.rows.slice(startIndex, endIndex);
+          var data = [];
+          data = result.rows.slice(startIndex, endIndex);
 
           for(var i = 0; i < data.length; i++)
           {
