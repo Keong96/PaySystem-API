@@ -527,16 +527,16 @@ async function ListenToContract()
 
 function ModifyUserCoin(amount, userId)
 {
-  con.connect(function(err) {
-    if (err) throw err;
-    console.log("Connected!");
+  // con.connect(function(err) {
+  //   if (err) throw err;
+  //   console.log("Connected!");
 
-    var sql = "UPDATE cmf_user SET score ="+amount+" WHERE id = "+userId+";";
-    con.query(sql, function (err, result) {
-      if (err) throw err;
-      console.log("1 record updated");
-    });
-  });
+  //   var sql = "UPDATE cmf_user SET score ="+amount+" WHERE id = "+userId+";";
+  //   con.query(sql, function (err, result) {
+  //     if (err) throw err;
+  //     console.log("1 record updated");
+  //   });
+  // });
 }
 
 function CheckAlarm(uid)
