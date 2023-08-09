@@ -498,22 +498,24 @@ app.post('/getCoin', async (req, res) => {
                                     const valueHex = "0x" + encodedData.substring(100);
                                     const amount = (parseInt(valueHex, 16) / 1000000);
                                     const rate = result3.rows[0].setting_value;
-                              
+                                    var newAmount = (amount * rate).toFixed(2);
 
-                              var newAmount = (amount * rate).toFixed(2);
+                                    con.connect(function(err)
+                                    {
+                                      if (err) throw err;
+                                        console.log("Connected!");
+                                        
+                                        con.query("SELECT amount FROM cmf_user WHERE id = "+req.body.userId, function (err, result4) {
+                                          if (err) throw err;
+
+                                          res.send("a ="+result4);
+                                          //var sql = "UPDATE cmf_user SET score ="+(oldAmount + newAmount)+" WHERE id = "+req.userId+";";
+                                        });
+                                    });
                             });
                           }
 
-                  con.connect(function(err)
-                  {
-                    if (err) throw err;
-                      console.log("Connected!");
-                      
-                      con.query("SELECT amount FROM cmf_user WHERE id = "+req.body.userId, function (err, oldAmount) {
-                        if (err) throw err;
-
-                        res.send("a ="+oldAmount);
-                        var sql = "UPDATE cmf_user SET score ="+(oldAmount + newAmount)+" WHERE id = "+req.userId+";";
+                  
 
                         // con.query(sql, function (err, result3) {
                         //   if (err) throw err;
@@ -526,11 +528,6 @@ app.post('/getCoin', async (req, res) => {
               //     res.send("错误：此订单未完成");
               //   }
               // }
-                      });
-                  });
-                                    
-                 
-
                 });
               }
     });
