@@ -482,7 +482,7 @@ app.get('/test', async (req, res) => {
 
               let half = Math.floor(data.length / 2);
               var uid = data.slice(0, half);
-              var amount = data.slice(half, str.length);
+              var amount = data.slice(half, data.length);
 
               var aaa = "uid = "+uid+" amount = "+amount;
 
