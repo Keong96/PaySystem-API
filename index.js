@@ -476,7 +476,7 @@ ListenToContract();
 
 app.get('/test', async (req, res) => {
   
-  tronWeb.trx.getTransaction("3a875147518a55a1c57a114f630043fc8615b183cf43d2b2e82c83c1924b8c8d")
+  tronWeb.trx.getTransaction("61f6314cc9225f0683f6be5984b6ce6c386db9d952c9f0bc51b3e0a0bec98c74")
              .then(result => {
               const combined_hex = result.raw_data.contract[0].parameter.value.data;
 
