@@ -391,10 +391,13 @@ const apiKey = process.env.TRONGRID_PRIVATE_KEY;
 var privateKey = process.env.CONTRACT_OWNER_PRIVATE_KEY;
 
 const tronWeb = new TronWeb({
-  fullHost: 'https://api.shasta.trongrid.io',
-  solidityNode : 'https://api.shasta.trongrid.io',
-  eventServer : 'https://api.shasta.trongrid.io',
+  // fullHost: 'https://api.shasta.trongrid.io',
+  // solidityNode : 'https://api.shasta.trongrid.io',
+  // eventServer : 'https://api.shasta.trongrid.io',
   //headers: { "TRON-PRO-API-KEY": apiKey },
+  fullHost: 'https://api.trongrid.io',
+  solidityNode : 'https://api.trongrid.io',
+  eventServer : 'https://api.trongrid.io',
   privateKey: privateKey,
 });
 let abi = [process.env.CONTRACT_ABI];
