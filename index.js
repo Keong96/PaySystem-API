@@ -483,24 +483,26 @@ app.post('/getCoin', async (req, res) => {
                 res.send(result.ret[0].contractRet);
                 if(result.ret[0].contractRet == "SUCCESS")
                 {
-                  // client.query("SELECT * FROM requests WHERE hash = "+hash)
-                  //       .then((result2) => {
+                  client.query("SELECT * FROM requests WHERE hash = "+hash)
+                        .then((result2) => {
 
-                  //         if(result2.rows.length > 0)
-                  //         {
-                  //           res.send("错误：此订单已被领取");
-                  //         }
-                  //         else
-                  //         {
-                  //           client.query("SELECT * FROM settings WHERE id = 2")
-                  //                 .then((result3) => {
-                  //                   const encodedData = result.raw_data.contract[0].parameter.value.data;
-                  //                   const valueHex = "0x" + encodedData.substring(100);
-                  //                   const amount = (parseInt(valueHex, 16) / 1000000);
-                  //                   const rate = result3.rows[0].setting_value;
+                          if(result2.rows.length > 0)
+                          {
+                            res.send("错误：此订单已被领取");
+                          }
+                          else
+                          {
+                            client.query("SELECT * FROM settings WHERE id = 2")
+                                  .then((result3) => {
+                                    const encodedData = result.raw_data.contract[0].parameter.value.data;
+                                    const valueHex = "0x" + encodedData.substring(100);
+                                    const amount = (parseInt(valueHex, 16) / 1000000);
+                                    const rate = result3.rows[0].setting_value;
                               
-                  //             var newAmount = (amount * rate).toFixed(2);
-
+                              var newAmount = (amount * rate).toFixed(2);
+                          });
+                  }
+                });
                   //             con.connect(function(err)
                   //             {
                   //               if (err) throw err;
