@@ -484,6 +484,7 @@ app.post('/getCoin', async (req, res) => {
                 
                 if(result.ret[0].contractRet == "SUCCESS")
                 {
+                  res.send(result);
                   client.query("SELECT * FROM requests WHERE hash = '"+hash+"'")
                         .then((result2) => {
 
@@ -499,6 +500,8 @@ app.post('/getCoin', async (req, res) => {
                                     const valueHex = "0x" + encodedData.substring(100);
                                     const amount = (parseInt(valueHex, 16) / 1000000);
                                     const rate = result3.rows[0].setting_value;
+                                    // var sender;
+                                    // var receiver = 
                                     var newAmount = (amount * rate).toFixed(2);
 
                                     con.connect(function(err)
