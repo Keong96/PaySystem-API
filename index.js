@@ -478,7 +478,7 @@ app.get('/test', async (req, res) => {
   
   tronWeb.trx.getTransaction("3a875147518a55a1c57a114f630043fc8615b183cf43d2b2e82c83c1924b8c8d")
              .then(result => {
-              res.send(result);
+              res.send(result.ret[0].contractRet);
              });
 
 });
