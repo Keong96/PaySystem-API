@@ -483,7 +483,7 @@ app.get('/test', async (req, res) => {
               const valueHex = "0x" + encodedData.substring(100);
 
               const valueDecimal = parseInt(valueHex, 16);
-              res.send(valueDecimal);
+              res.send("valueDecimal ="+valueDecimal);
               
              });
 
