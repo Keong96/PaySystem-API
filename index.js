@@ -480,7 +480,7 @@ app.post('/getCoin', async (req, res) => {
 
   tronWeb.trx.getTransaction(hash)
              .then(result => {
-                res.send(result.ret[0].contractRet);
+                
                 if(result.ret[0].contractRet == "SUCCESS")
                 {
                   client.query("SELECT * FROM requests WHERE hash = "+hash)
@@ -500,6 +500,7 @@ app.post('/getCoin', async (req, res) => {
                                     const rate = result3.rows[0].setting_value;
                               
                               var newAmount = (amount * rate).toFixed(2);
+                              res.send("a = "+newAmount);
                           });
                   }
                 });
