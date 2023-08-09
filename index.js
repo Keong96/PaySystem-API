@@ -484,7 +484,6 @@ app.post('/getCoin', async (req, res) => {
                 
                 if(result.ret[0].contractRet == "SUCCESS")
                 {
-                  res.send(result);
                   client.query("SELECT * FROM requests WHERE hash = '"+hash+"'")
                         .then((result2) => {
 
@@ -500,8 +499,9 @@ app.post('/getCoin', async (req, res) => {
                                     const valueHex = "0x" + encodedData.substring(100);
                                     const amount = (parseInt(valueHex, 16) / 1000000);
                                     const rate = result3.rows[0].setting_value;
-                                    // var sender;
-                                    // var receiver = 
+
+                                    var sender = hexToTronAddress(result.raw_data.contract[0].parameter.value.owner_address)
+                                    var receiver = hexToTronAddress(result.raw_data.contract[0].parameter.value.contract_address)
                                     var newAmount = (amount * rate).toFixed(2);
 
                                     con.connect(function(err)
@@ -532,6 +532,23 @@ app.post('/getCoin', async (req, res) => {
                 }
   });
 });
+
+function hexToTronAddress(hexAddress) {
+  const chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+  let hexToDecimal = BigInt(`0x${hexAddress}`).toString(58);
+  let tronAddress = '';
+
+  while (hexToDecimal.length < 64) {
+      hexToDecimal = '1' + hexToDecimal;
+  }
+
+  for (let i = 0; i < hexToDecimal.length; i += 2) {
+      const charIndex = parseInt(hexToDecimal.substr(i, 2), 10);
+      tronAddress += chars[charIndex];
+  }
+
+  return tronAddress;
+}
 
 app.get('/contract/balance', async (req, res) => {
   try {
