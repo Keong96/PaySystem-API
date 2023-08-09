@@ -478,14 +478,38 @@ app.get('/test', async (req, res) => {
   
   tronWeb.trx.getTransaction("3a875147518a55a1c57a114f630043fc8615b183cf43d2b2e82c83c1924b8c8d")
              .then(result => {
-              res.send(result.ret[0].contractRet);
               var data = result.raw_data.contract[0].parameter.value.data;
 
               let half = Math.floor(data.length / 2);
               var uid = data.slice(0, half);
               var amount = data.slice(half, str.length);
+
+              res.send("uid = "+uid+", amount = "+amount);
              });
 
+});
+
+
+app.post('/getCoin', async (req, res) => {
+  var hash = req.body.hash;
+
+  tronWeb.trx.getTransaction(hash)
+             .then(result => {
+                if(result.ret[0].contractRet == "SUCCESS")
+                {
+                  var sql = "UPDATE cmf_user SET score ="+amount+" WHERE id = "+userId+";";
+                  con.connect(function(err) {
+                    if (err) throw err;
+                    console.log("Connected!");
+                    con.query(sql, function (err, result) {
+                      if (err) throw err;
+                      console.log("Result: " + result);
+                    });
+                  });
+
+                  
+                }
+             });
 });
 
 app.get('/contract/balance', async (req, res) => {
@@ -530,18 +554,6 @@ app.get('/contract/balance', async (req, res) => {
 //     res.status(500).send(error.stack);
 //   }
 // });
-
-app.post('/getCoin', async (req, res) => {
-  var hash = req.body.hash;
-
-  tronWeb.trx.getTransaction(hash)
-             .then(result => {
-                if(result.ret.contractRet == "SUCCESSFUL")
-                {
-                  var sql = "UPDATE cmf_user SET score ="+amount+" WHERE id = "+userId+";";
-                }
-             });
-});
 
 async function ListenToContract()
 {
