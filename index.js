@@ -505,7 +505,7 @@ app.post('/getCoin', async (req, res) => {
                                       if (err) throw err;
                                         console.log("Connected!");
                                         
-                                        var sql = `SELECT amount FROM cmf_user WHERE id = ` + req.body.uid;
+                                        var sql = `SELECT amount FROM yuanma-live.cmf_user WHERE id = ` + req.body.uid;
 
                                         con.query(sql, function (err, result4) {
                                           if (err) throw err;
