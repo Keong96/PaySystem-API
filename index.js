@@ -534,20 +534,17 @@ app.post('/getCoin', async (req, res) => {
 });
 
 function hexToTronAddress(hexAddress) {
-  const chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-  let hexToDecimal = BigInt(`0x${hexAddress}`).toString(58);
+  const chars = 'TG23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+  let value = BigInt('0x' + hexAddress);
   let tronAddress = '';
 
-  while (hexToDecimal.length < 64) {
-      hexToDecimal = '1' + hexToDecimal;
+  while (value > 0) {
+      tronAddress = chars[value % 58n] + tronAddress;
+      value /= 58n;
   }
 
-  for (let i = 0; i < hexToDecimal.length; i += 2) {
-      const charIndex = parseInt(hexToDecimal.substr(i, 2), 10);
-      tronAddress += chars[charIndex];
-  }
-
-  return tronAddress;
+  // Prefix with 'T' for mainnet addresses
+  return 'T' + tronAddress;
 }
 
 app.get('/contract/balance', async (req, res) => {
