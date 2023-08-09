@@ -499,8 +499,9 @@ app.post('/getCoin', async (req, res) => {
                                     const amount = (parseInt(valueHex, 16) / 1000000);
                                     const rate = result3.rows[0].setting_value;
                               
-                              var newAmount = (amount * rate).toFixed(2);
-                              res.send("a = "+newAmount);
+                              res.send("OK");
+                              // var newAmount = (amount * rate).toFixed(2);
+                              // res.send("a = "+newAmount);
                           });
                   }
                 });
