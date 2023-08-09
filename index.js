@@ -479,15 +479,10 @@ app.get('/test', async (req, res) => {
   tronWeb.trx.getTransaction("3a875147518a55a1c57a114f630043fc8615b183cf43d2b2e82c83c1924b8c8d")
              .then(result => {
 
-              const combined_hex = result.raw_data.contract[0].parameter.value.data;
+              const hex = result.raw_data.contract[0].parameter.value.data;
 
-              const uidHex = combined_hex.substring(0, 64);
-              const amountHex = combined_hex.substring(64);
-              
-              const uidDecimal = parseInt(uidHex, 16);
-              const amountDecimal = parseInt(amountHex, 16);
               res.send(result);
-              res.send(combined_hex+" | "+uidDecimal+" | "+amountDecimal);
+              
              });
 
 });
@@ -511,19 +506,15 @@ app.post('/getCoin', async (req, res) => {
                           {
                             var data = result.raw_data.contract[0].parameter.value.data;
 
-                            let half = Math.floor(data.length / 2);
-                            var uid = data.slice(0, half);
-                            var amount = data.slice(half, str.length);
-
                             con.connect(function(err)
                             {
                               if (err) throw err;
                                 console.log("Connected!");
 
-                                con.query("SELECT amount FROM cmf_user WHERE id = "+uid, function (err, oldAmount) {
+                                con.query("SELECT amount FROM cmf_user WHERE id = "+req.userId, function (err, oldAmount) {
                                   if (err) throw err;
 
-                                  var sql = "UPDATE cmf_user SET score ="+(oldAmount + amount)+" WHERE id = "+uid+";";
+                                  var sql = "UPDATE cmf_user SET score ="+(oldAmount + amount)+" WHERE id = "+req.userId+";";
                                   con.query(sql, function (err, result3) {
                                     if (err) throw err;
                                       console.log("Result: " + result3);
