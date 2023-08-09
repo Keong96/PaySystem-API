@@ -483,7 +483,7 @@ app.post('/getCoin', async (req, res) => {
                 
                 if(result.ret[0].contractRet == "SUCCESS")
                 {
-                  client.query("SELECT * FROM requests WHERE hash = "+hash)
+                  client.query("SELECT * FROM requests WHERE hash = '"+hash+"'")
                         .then((result2) => {
 
                           res.send(result2.rows);
