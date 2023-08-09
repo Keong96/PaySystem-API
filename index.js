@@ -502,8 +502,10 @@ app.post('/getCoin', async (req, res) => {
 
                               var newAmount = (amount * rate).toFixed(2);
                               res.send("a = "+newAmount);
-                          });
-                  //             con.connect(function(err)
+                            });
+                          }
+
+                          //             con.connect(function(err)
                   //             {
                   //               if (err) throw err;
                   //                 console.log("Connected!");
@@ -524,11 +526,14 @@ app.post('/getCoin', async (req, res) => {
                   //           });
                   //       }
                   //   });
-                }
-                else
-                {
-                  res.send("错误：此订单未完成");
-                }
+              //   }
+              //   else
+              //   {
+              //     res.send("错误：此订单未完成");
+              //   }
+              // }
+                    });
+                  }
              });
 });
 
