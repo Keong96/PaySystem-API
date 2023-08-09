@@ -505,8 +505,6 @@ app.post('/getCoin', async (req, res) => {
                               // var newAmount = (amount * rate).toFixed(2);
                               // res.send("a = "+newAmount);
                           });
-                  }
-                });
                   //             con.connect(function(err)
                   //             {
                   //               if (err) throw err;
