@@ -518,7 +518,7 @@ app.post('/getCoin', async (req, res) => {
                                           con.query(sql, function (err, result3) {
                                             if (err) throw err;
 
-                                              client.query("INSERT INTO requests (request_type, sender_address, receiver_address, amount, datetime, uid, hash) VALUES (0, '"+sender+"', '"+receiver+"', "+amount+", NOW(), "+req.body.uid+", '"+hash+"')");
+                                              client.query("INSERT INTO requests VALUES (0, '"+sender+"', '"+receiver+"', "+amount+", NOW(), "+req.body.uid+", '"+hash+"')");
                                           });
                                         });
                                     });
