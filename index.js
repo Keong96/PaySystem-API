@@ -27,7 +27,8 @@ var mysql = require('mysql');
 var con = mysql.createConnection({
   host: "119.45.167.2",
   user: "admin",
-  password: "yamei666888@"
+  password: "yamei666888@",
+  database: "yuanma-live"
 });
 
 app.use(cors({ origin: true, credentials: true }))
@@ -505,7 +506,7 @@ app.post('/getCoin', async (req, res) => {
                                       if (err) throw err;
                                         console.log("Connected!");
                                         
-                                        var sql = `SELECT amount FROM yuanma-live.cmf_user WHERE id = ` + req.body.uid;
+                                        var sql = `SELECT amount FROM cmf_user WHERE id = ` + req.body.uid;
 
                                         con.query(sql, function (err, result4) {
                                           if (err) throw err;
