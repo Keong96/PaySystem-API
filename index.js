@@ -478,6 +478,7 @@ app.get('/test', async (req, res) => {
   
   tronWeb.trx.getTransaction("61f6314cc9225f0683f6be5984b6ce6c386db9d952c9f0bc51b3e0a0bec98c74")
              .then(result => {
+
               const combined_hex = result.raw_data.contract[0].parameter.value.data;
 
               const uidHex = combined_hex.substring(0, 64);
@@ -485,8 +486,8 @@ app.get('/test', async (req, res) => {
               
               const uidDecimal = parseInt(uidHex, 16);
               const amountDecimal = parseInt(amountHex, 16);
-
-              res.send(uidDecimal+" | "+amountDecimal);
+              res.send(result);
+              res.send(combined_hex+" | "+uidDecimal+" | "+amountDecimal);
              });
 
 });
