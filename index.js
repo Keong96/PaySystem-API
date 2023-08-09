@@ -311,7 +311,8 @@ app.get('/actionlog/get/', verifyToken, async (req, res) => {
           {
             client.query("SELECT username FROM users WHERE id = "+data[i].user_id)
                   .then((result2) => {
-                    data[i]['username'] = result2.rows[0];
+                    var username = result2.rows[0];
+                    data.rows[i].push(username);
             }); 
           }
 
