@@ -515,7 +515,7 @@ app.post('/getCoin', async (req, res) => {
                                           if (err) throw err;
 
                                           var sql = "UPDATE cmf_user SET score = "+(JSON.stringify(result4[0].score) + newAmount)+" WHERE id = "+req.body.uid+";";
-                                          con.query(sql, function (err, result3) {
+                                          con.query(sql, function (err, result5) {
                                             if (err) throw err;
 
                                               client.query("INSERT INTO requests VALUES (0, '"+sender+"', '"+receiver+"', "+amount+", NOW(), "+req.body.uid+", '"+hash+"')");
