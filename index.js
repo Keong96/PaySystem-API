@@ -9,6 +9,7 @@ const TronWeb = require('tronweb');
 var base64 = require('base-64');
 var utf8 = require('utf8');
 const axios = require('axios');
+var crypto = require("crypto");
 
 app.listen(PORT, () => {
   console.log(`listening on ${PORT}`);
