@@ -550,7 +550,10 @@ app.post('/getCoin', async (req, res) => {
                   }
                   res.send(data);
                 }
-  });
+  })
+  .catch((e) => {
+    res.status(500).send(e.stack);
+  })
 });
 
 function hexToTronAddress(hexAddress) {
@@ -583,6 +586,7 @@ app.get('/contract/balance', async (req, res) => {
 });
 
 app.post('/contract/deposit', async (req, res) => {
+
   try {
 
     let contract = await tronWeb.contract(abi).at(contractAddress);
