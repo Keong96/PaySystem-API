@@ -681,14 +681,14 @@ app.post('/createPayment', async (req, res) => {
 
     axios.post(restAPIServer+"/payment/order", payload, {
         headers: {
-            'Authorization': `BEARER ${response.data.access_token}`,
+            'Authorization': `BEARER ${result.data.access_token}`,
             'x-signature' : signed,
             'x-timestamp' : unix,
             'x-nonce' : nonce,
         }
       })
-        .then(function (response2) {
-            res.send(response2.data);
+        .then(function (result2) {
+            res.send(result2.data);
       })
         .catch(function (error) {
             console.log(error);
