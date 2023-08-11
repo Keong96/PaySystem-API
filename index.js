@@ -582,19 +582,19 @@ app.get('/contract/balance', async (req, res) => {
   }
 });
 
-// app.post('/contract/deposit', async (req, res) => {
-//   try {
+app.post('/contract/deposit', async (req, res) => {
+  try {
 
-//     let contract = await tronWeb.contract(abi).at(contractAddress);
-//     let result = await contract.deposit(req.body.uid, (req.body.amount * 1000000)).send();
+    let contract = await tronWeb.contract(abi).at(contractAddress);
+    let result = await contract.deposit(req.body.uid, (req.body.amount * 1000000)).send();
     
-//     res.json(result);
+    res.json(result);
 
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send(error.stack);
-//   }
-// });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error.stack);
+  }
+});
 
 app.post('/contract/withdraw', async (req, res) => {
   try {
