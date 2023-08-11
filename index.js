@@ -500,8 +500,10 @@ app.post('/getCoin', async (req, res) => {
                                     const amount = (parseInt(valueHex, 16) / 1000000);
                                     const rate = result3.rows[0].setting_value;
 
-                                    var sender = hexToTronAddress(result.raw_data.contract[0].parameter.value.owner_address)
-                                    var receiver = hexToTronAddress(result.raw_data.contract[0].parameter.value.contract_address)
+                                    // var sender = hexToTronAddress()
+                                    // var receiver = hexToTronAddress()
+                                    var sender = tronWeb.toDecimal(result.raw_data.contract[0].parameter.value.owner_address);
+                                    var receiver = tronWeb.toDecimal(result.raw_data.contract[0].parameter.value.contract_address);
                                     var newAmount = (amount * rate).toFixed(2);
 
                                     con.connect(function(err)
@@ -521,7 +523,7 @@ app.post('/getCoin', async (req, res) => {
                                             if (err) throw err;
 
                                               client.query("INSERT INTO requests (request_type, sender_address, receiver_address, amount, datetime, uid, hash) VALUES (0, '"+sender+"', '"+receiver+"', "+amount.toFixed(2)+", NOW(), "+req.body.uid+", '"+hash+"')");
-                                              //client.query("INSERT INTO requests VALUES (0, '"+sender+"', '"+receiver+"', "+amount.toFixed(2)+", NOW(), "+req.body.uid+", '"+hash+"')");
+                                              res.send("")
                                           });
                                         });
                                     });
@@ -536,19 +538,19 @@ app.post('/getCoin', async (req, res) => {
   });
 });
 
-function hexToTronAddress(hexAddress) {
-  const chars = 'TG23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-  let value = BigInt('0x' + hexAddress);
-  let tronAddress = '';
+// function hexToTronAddress(hexAddress) {
+//   const chars = 'TG23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+//   let value = BigInt('0x' + hexAddress);
+//   let tronAddress = '';
 
-  while (value > 0) {
-      tronAddress = chars[value % 58n] + tronAddress;
-      value /= 58n;
-  }
+//   while (value > 0) {
+//       tronAddress = chars[value % 58n] + tronAddress;
+//       value /= 58n;
+//   }
 
-  // Prefix with 'T' for mainnet addresses
-  return 'T' + tronAddress;
-}
+//   // Prefix with 'T' for mainnet addresses
+//   return 'T' + tronAddress;
+// }
 
 app.get('/contract/balance', async (req, res) => {
   try {
