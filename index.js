@@ -648,12 +648,11 @@ app.post('/createPayment', async (req, res) => {
       callbackUrl : "www.google.com",
       currency : "MYR",
       customer : customer,
-      description : "购买金币",
-      //orderReferenceNo : req.body.orderReferenceNo,
-      orderReferenceNo : "AZSNVPF2020122109",
+      description : "Buy Coin",
+      orderReferenceNo : req.body.orderReferenceNo,
       redirectUrl : "",
       remarks : "",
-      title : "充值",
+      title : "Top Up",
   }
 
   axios.post(authenticationServer+"/auth/token", {
@@ -666,50 +665,46 @@ app.post('/createPayment', async (req, res) => {
   })
   .then(function (response) {
   
-      var payload = {
-          order : order,
-          storeId : process.env.STORE_ID,
-          type: "ECOMMERCE"
-      }
-  
-      var bytes = utf8.encode(JSON.stringify(payload));
-      var encoded = base64.encode(bytes);
-  
-      var unix = Math.round(+new Date()/1000);
-      var nonce = "Dpjczql20RuZRsUblzMB3hOjdPfiZZfS";
-  
-      var param = "data="+encoded+"&timestamp="+unix+"&nonce="+nonce;
-      var hmac = crypto.createHmac("sha512", process.env.STORE_KEY);
-      var signed = hmac.update(new Buffer(param, 'utf-8')).digest("base64");
-  
-      axios.post(restAPIServer+"/payment/order", payload, {
-          headers: {
-              'Authorization': `BEARER ${response.data.access_token}`,
-              'x-signature' : signed,
-              'x-timestamp' : unix,
-              'x-nonce' : nonce,
-          }
-        })
-          .then(function (response2) {
-              res.send(response2.data);
-        })
-          .catch(function (error) {
-              console.log(error);
-        });
-  })
-  .catch(function (error) {
-      console.log(error);
-});
+        var payload = {
+            order : order,
+            storeId : process.env.STORE_ID,
+            type: "ECOMMERCE"
+        }
+    
+        var bytes = utf8.encode(JSON.stringify(payload));
+        var encoded = base64.encode(bytes);
+    
+        var unix = Math.round(+new Date()/1000);
+        var nonce = "Dpjczql20RuZRsUblzMB3hOjdPfiZZfS";
+    
+        var param = "data="+encoded+"&timestamp="+unix+"&nonce="+nonce;
+        var hmac = crypto.createHmac("sha512", process.env.STORE_KEY);
+        var signed = hmac.update(new Buffer(param, 'utf-8')).digest("base64");
+    
+        axios.post(restAPIServer+"/payment/order", payload, {
+            headers: {
+                'Authorization': `BEARER ${response.data.access_token}`,
+                'x-signature' : signed,
+                'x-timestamp' : unix,
+                'x-nonce' : nonce,
+            }
+          })
+            .then(function (response2) {
+                res.send(response2.data);
+          })
+            .catch(function (error) {
+                console.log(error);
+          });
+    })
+    .catch(function (error) {
+        console.log(error);
+  });
 })
 
 app.get('/checkPaymentStatus/:orderReferenceNo', async (req, res) => {
 
   GetStatusByOrder(req.params.orderReferenceNo);
 })
-
-
-
-
 
 // function VoidPayment(transaction_id, amount, reason)
 // {
