@@ -648,7 +648,6 @@ app.post('/createPayment', async (req, res) => {
 
     var customer = {
       contact : req.body.contact,
-      email : "",
       memberReferenceNo : req.body.userId,
       name : req.body.username,
     }
@@ -660,7 +659,6 @@ app.post('/createPayment', async (req, res) => {
         customer : customer,
         description : "Buy Coin",
         orderReferenceNo : req.body.orderReferenceNo,
-        redirectUrl : "",
         remarks : "",
         title : "Top Up",
     }
