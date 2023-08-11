@@ -8,7 +8,7 @@ require('dotenv').config();
 const TronWeb = require('tronweb');
 var base64 = require('base-64');
 var utf8 = require('utf8');
-import axios from 'axios';
+const axios = require('axios');
 
 app.listen(PORT, () => {
   console.log(`listening on ${PORT}`);
