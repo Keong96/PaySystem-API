@@ -513,10 +513,10 @@ app.post('/getCoin', async (req, res) => {
 
                                         con.query(sql, function (err, result4) {
                                           if (err) throw err;
-                                          console.log(JSON.stringify(result4));
+
                                           var current = JSON.stringify(result4[0].score);
 
-                                          var sql = "UPDATE cmf_user SET score = "+(current + newAmount)+" WHERE id = "+req.body.uid+";";
+                                          var sql = "UPDATE cmf_user SET score = "+(parseInt(current) + parseInt(newAmount))+" WHERE id = "+req.body.uid+";";
                                           con.query(sql, function (err, result5) {
                                             if (err) throw err;
 
