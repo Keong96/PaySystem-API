@@ -664,6 +664,8 @@ app.post('/createPayment', async (req, res) => {
     }
 
     var payload = {
+        channel : "GOBIZ",
+        mode : 21,
         order : order,
         storeId : process.env.STORE_ID,
         type: "ECOMMERCE"
