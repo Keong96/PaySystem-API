@@ -681,6 +681,19 @@ app.post('/createPayment', async (req, res) => {
     var hmac = crypto.createHmac("sha512", process.env.STORE_KEY);
     var signed = hmac.update(new Buffer(param, 'utf-8')).digest("base64");
 
+    var testData = [
+      "bytes" = bytes,
+      "encoded" = encoded,
+      "nonce" = nonce,
+      "param" = param,
+      "hmac" = hmac,
+      "signed" = signed,
+    ]
+
+    console.log("---------------------------------------------------------------------------------------------------")
+    console.log(testData);
+    console.log("---------------------------------------------------------------------------------------------------")
+
     axios.post(restAPIServer+"/payment/order", payload, {
         headers: {
             'Authorization': `BEARER ${result.data.access_token}`,
